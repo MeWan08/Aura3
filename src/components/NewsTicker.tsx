@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { TrendingUp, Zap, ExternalLink } from 'lucide-react'
 
-const API_BASE = 'https://aravsaxena884-dao.hf.space/'
+const API_BASE = 'https://aravsaxena884-dao.hf.space'
 
 interface NewsItem {
   article_title?: string

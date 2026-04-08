@@ -40,8 +40,8 @@ ChartJS.register(
   ArcElement
 )
 
-const API_BASE = 'https://aravsaxena884-dao.hf.space/1'
-const SOCKET_BASE = 'https://aravsaxena884-dao.hf.space/1'
+const API_BASE = 'https://aravsaxena884-dao.hf.space'
+const SOCKET_BASE = 'https://aravsaxena884-dao.hf.space'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
