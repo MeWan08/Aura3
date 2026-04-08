@@ -24,7 +24,7 @@ export default function FounderDashboard() {
 
   useEffect(() => {
     if (!loading) {
-      if (!currentUser || userRole !== 'founder') {
+      if (!currentUser || userRole !== 'startup') {
         router.push('/')
       }
     }
@@ -38,7 +38,7 @@ export default function FounderDashboard() {
     )
   }
 
-  if (!currentUser || userRole !== 'founder') return null
+  if (!currentUser || userRole !== 'startup') return null
 
   const myProposals = proposals.filter(p => address && p.founder.toLowerCase() === address.toLowerCase())
   const activeProposals = myProposals.filter(p => !p.executed)
