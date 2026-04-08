@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Newspaper, ExternalLink, TrendingUp, Clock } from 'lucide-react'
 
-const API_BASE = 'http://localhost:3001'
+const API_BASE = 'https://aravsaxena884-dao.hf.space/'
 
 // Crypto-themed Unsplash images for fallback
 const CRYPTO_IMAGES = [

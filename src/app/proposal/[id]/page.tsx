@@ -41,7 +41,7 @@ export default function ProposalDetail() {
   const { writeContract: writeVote, isPending: isVoting } = useWriteContract()
   const { writeContract: writeExecute, isPending: isExecuting } = useWriteContract()
 
-  const BACKEND_URL = 'http://localhost:3001'
+  const BACKEND_URL = 'https://aravsaxena884-dao.hf.space/'
   const [isDownloading, setIsDownloading] = useState(false)
   const [backendStartupId, setBackendStartupId] = useState<string | null>(null)
 
