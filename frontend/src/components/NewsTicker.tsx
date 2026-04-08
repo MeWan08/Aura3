@@ -1,0 +1,106 @@
+'use client'
+
+import { useEffect, useState, useRef } from 'react'
+import { TrendingUp, Zap, ExternalLink } from 'lucide-react'
+
+const API_BASE = 'http://localhost:3001'
+
+interface NewsItem {
+  article_title?: string
+  source?: string
+  article_url?: string
+  related_symbol?: string
+  post_time_utc?: string
+}
+
+export function NewsTicker() {
+  const [headlines, setHeadlines] = useState<NewsItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const fetchHeadlines = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/finance-news/headlines`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.headlines && data.headlines.length > 0) {
+            setHeadlines(data.headlines)
+          }
+        }
+      } catch {
+        // Silently fail - ticker just won't show
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchHeadlines()
+  }, [])
+
+  if (isLoading || headlines.length === 0) return null
+
+  // Duplicate headlines for seamless infinite scroll
+  const doubledHeadlines = [...headlines, ...headlines]
+
+  return (
+    <div className="w-full bg-black/80 backdrop-blur-md border-b border-white/5 overflow-hidden relative z-40">
+      <div className="flex items-center">
+        {/* Fixed label */}
+        <div className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-[#03e1ff]/15 to-transparent border-r border-white/10 shrink-0">
+          <Zap className="w-4 h-4 text-[#03e1ff] animate-pulse" />
+          <span className="text-[11px] font-bold font-mono text-[#03e1ff] uppercase tracking-widest whitespace-nowrap">
+            Live Markets
+          </span>
+        </div>
+
+        {/* Scrolling headlines */}
+        <div className="flex-1 overflow-hidden relative">
+          <div
+            ref={scrollRef}
+            className="flex items-center gap-0 animate-marquee whitespace-nowrap"
+            style={{
+              animation: `marquee ${Math.max(headlines.length * 4, 30)}s linear infinite`,
+            }}
+          >
+            {doubledHeadlines.map((item, i) => (
+              <a
+                key={i}
+                href={item.article_url || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 px-6 py-2.5 hover:bg-white/5 transition-colors group shrink-0"
+              >
+                {item.related_symbol && (
+                  <span className="text-[11px] font-bold font-mono text-[#a855f7] bg-[#a855f7]/10 px-2 py-0.5 rounded-sm border border-[#a855f7]/20">
+                    {item.related_symbol}
+                  </span>
+                )}
+                <span className="text-[12px] font-medium text-gray-300 group-hover:text-white transition-colors truncate max-w-[450px]">
+                  {item.article_title || 'Breaking news...'}
+                </span>
+                <TrendingUp className="w-3 h-3 text-emerald-500/50 shrink-0" />
+                <span className="text-[10px] text-gray-600 font-mono shrink-0">
+                  {item.source || ''}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 60s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+    </div>
+  )
+}

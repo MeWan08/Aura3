@@ -1,0 +1,1204 @@
+'use client'
+
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import ReactMarkdown from 'react-markdown'
+import { useRouter } from 'next/navigation'
+import {
+  Brain, Send, Paperclip, Sparkles, Loader2, X, FileText, TrendingUp, Shield, AlertTriangle, Clock, Newspaper, Users, LineChart, Network, Menu, MessageSquare
+} from 'lucide-react'
+import { db } from '@/lib/firebase'
+import { collection, doc, query, orderBy, onSnapshot, setDoc, addDoc, getDocs, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { useAuth } from '@/context/AuthContext'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js'
+import { Bar, Radar } from 'react-chartjs-2'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+)
+
+const API_BASE = 'http://localhost:3001'
+const SOCKET_BASE = 'http://localhost:3001'
+
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  agent?: string
+  file?: string
+  timestamp: Date
+}
+
+// Extract YouTube video cards from raw URLs
+function extractYouTubeVideos(content: string): { cleanContent: string; videos: { title: string; url: string; thumbnail: string; videoId: string }[] } {
+  const videos: { title: string; url: string; thumbnail: string; videoId: string }[] = []
+  
+  // Match lines containing youtube links, extracting optional leading text as title
+  const lineRegex = /^(.*?)https:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)[^\s]*\s*$/gm
+  
+  let cleanContent = content.replace(lineRegex, (match, prefix, videoId) => {
+    let title = prefix.trim().replace(/^[-*•]*\s*/, '').replace(/:\s*$/, '').replace(/\*\*/g, '').trim()
+    if (!title || title.length < 2) title = 'Video Tutorial'
+    videos.push({
+      title,
+      url: `https://www.youtube.com/watch?v=${videoId}`,
+      thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+      videoId: videoId
+    })
+    return '' // Remove the URL line
+  })
+  
+  // Clean up introductory fluff phrases left behind
+  cleanContent = cleanContent.replace(/Here are some YouTube video resources.*:\s*/gi, '')
+
+  return { cleanContent: cleanContent.trim(), videos }
+}
+
+// Extract document analysis flashcard
+function extractFlashcard(content: string) {
+  const flashcardRegex = /\[FLASHCARD\]([\s\S]*?)\[\/FLASHCARD\]/
+  const match = flashcardRegex.exec(content)
+  if (!match) return { cleanContent: content, flashcard: null }
+
+  const cardText = match[1]
+  const extract = (key: string, def = '') => {
+    const rx = new RegExp(`${key}:\\s*(.+)`)
+    const m = cardText.match(rx)
+    return m ? m[1].trim().replace(/\*\*/g, '') : def
+  }
+
+  const flashcard = {
+    title: extract('Title', 'Startup Analysis'),
+    highlight: extract('Highlight', ''),
+    verdict: extract('Verdict', 'Review'),
+    team: extract('Team', ''),
+    metrics: extract('KeyMetrics', ''),
+    whatItDoes: extract('What It Does', '')
+  }
+
+  return {
+    cleanContent: content.replace(flashcardRegex, '').trim(),
+    flashcard
+  }
+}
+
+// Extract competitor comparison chart data
+function extractCompetitorChart(content: string) {
+  const chartRegex = /\[COMPETITOR_CHART\]([\s\S]*?)\[\/COMPETITOR_CHART\]/
+  const match = chartRegex.exec(content)
+  if (!match) return { cleanContent: content, competitorData: null }
+
+  let competitorData = null
+  try {
+    const jsonStr = match[1].trim()
+    competitorData = JSON.parse(jsonStr)
+  } catch (e) {
+    console.warn('Failed to parse competitor chart JSON:', e)
+  }
+
+  return {
+    cleanContent: content.replace(chartRegex, '').trim(),
+    competitorData
+  }
+}
+
+// Extract interactive UI widgets
+function extractInteractiveForm(content: string) {
+  const hasForm = content.includes('[PORTFOLIO_FORM]')
+  return {
+    cleanContent: content.replace('\[PORTFOLIO_FORM\]', '').replace('[PORTFOLIO_FORM]', '').trim(),
+    hasForm
+  }
+}
+
+// Extract news card data
+function extractNewsCard(content: string) {
+  const newsRegex = /\[NEWS_CARD\]([\s\S]*?)\[\/NEWS_CARD\]/
+  const match = newsRegex.exec(content)
+  if (!match) return { cleanContent: content, newsData: null }
+
+  let newsData = null
+  try {
+    const jsonStr = match[1].trim()
+    newsData = JSON.parse(jsonStr)
+  } catch (e) {
+    console.warn('Failed to parse news card JSON:', e)
+  }
+
+  return {
+    cleanContent: content.replace(newsRegex, '').trim(),
+    newsData
+  }
+}
+
+function AgentBadge({ agent }: { agent?: string }) {
+  if (!agent) return null
+  const colorMap: Record<string, string> = {
+    'Financial Educator': 'border-emerald-500/30 text-emerald-400',
+    'Document Analyzer': 'border-amber-500/30 text-amber-400',
+    'Market Researcher': 'border-blue-500/30 text-blue-400',
+    'Portfolio Coach': 'border-purple-500/30 text-purple-400',
+  }
+  const style = colorMap[agent] || 'border-gray-500/30 text-gray-400'
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-bold font-mono uppercase tracking-wider rounded-sm border bg-white/[0.02] ${style}`}>
+      <Brain className="w-2.5 h-2.5" />
+      {agent}
+    </span>
+  )
+}
+
+function YouTubeCard({ video }: { video: any }) {
+  return (
+    <div className="group block rounded-lg overflow-hidden border border-white/10 bg-black/40 shadow-xl">
+      <div className="relative aspect-video overflow-hidden bg-black">
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${video.videoId}?rel=0`}
+          title={video.title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="border-0 w-full h-full"
+        />
+      </div>
+      <div className="p-3 border-t border-white/10 bg-black/80">
+        <p className="text-[12px] font-bold text-white group-hover:text-[#03e1ff] transition-colors line-clamp-2 leading-snug">
+          {video.title}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function StartupFlashCard({ flashcard }: { flashcard: any }) {
+  const imageUrl = "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800&q=80"
+  
+  // Determine verdict color
+  const isPositive = flashcard.verdict.toLowerCase().includes('positive') || flashcard.verdict.toLowerCase().includes('strong') || flashcard.verdict.toLowerCase().includes('bullish')
+  const isWarning = flashcard.verdict.toLowerCase().includes('warning') || flashcard.verdict.toLowerCase().includes('red flag')
+  const verdictColor = isPositive ? 'text-secondary-fixed' 
+                     : isWarning ? 'text-error' 
+                     : 'text-amber-400'
+
+  return (
+    <div className="glass-card relative group overflow-hidden flex flex-col rounded-xl w-full h-full">
+      {/* Hero Area */}
+      <div className="h-44 relative overflow-hidden hero-clip bg-surface-container-highest">
+        <img src={imageUrl} alt="Startup" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-[2000ms]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-[#00daf7]/10 mix-blend-overlay" />
+        
+        {/* Holographic Overlay */}
+        <div className="absolute top-4 left-4 p-2 bg-black/40 backdrop-blur-md border border-white/10">
+          <span className="font-mono text-[9px] text-primary-container font-bold tracking-widest uppercase">Protocol: AUR-7</span>
+        </div>
+        
+        <div className="absolute bottom-10 left-6">
+          <h3 className="font-headline font-black text-3xl text-secondary tracking-tight">{flashcard.title || 'Startup'}</h3>
+          <span className="text-[10px] font-mono text-primary-container/80 uppercase tracking-widest">
+            {flashcard.whatItDoes && flashcard.whatItDoes !== 'Not specified' ? flashcard.whatItDoes.slice(0, 30) + '...' : 'Series Selection'}
+          </span>
+        </div>
+      </div>
+      
+      {/* Card Content */}
+      <div className="p-6 pt-0 flex flex-col flex-1">
+        <p className="text-xs text-on-surface-variant leading-relaxed mb-6 border-l border-primary-container/20 pl-4 py-2 italic font-light">
+          "{flashcard.highlight || 'Strategic cross-chain asset accumulation.'}"
+        </p>
+        
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-secondary-fixed">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="text-[8px] font-black uppercase">Verdict</span>
+            </div>
+            <span className={`text-xs font-bold uppercase ${verdictColor}`}>{flashcard.verdict || 'NEUTRAL'}</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-tertiary">
+              <Users className="w-3.5 h-3.5" />
+              <span className="text-[8px] font-black uppercase">Team</span>
+            </div>
+            <span className="text-xs font-bold text-secondary truncate">{flashcard.team && flashcard.team !== 'Not specified' ? flashcard.team.split(' ')[0] : 'ANON'}</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-primary-container">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span className="text-[8px] font-black uppercase">Metrics</span>
+            </div>
+            <span className="text-xs font-bold text-secondary truncate">{flashcard.metrics && flashcard.metrics !== 'Not specified' ? flashcard.metrics.split(' ')[0] : 'N/A'}</span>
+          </div>
+        </div>
+        
+        <div className="mt-auto flex justify-between items-center bg-white/5 p-4 rounded-lg border border-white/5">
+          <div className="flex items-center gap-4">
+            {/* Circular Progress */}
+            <div className="relative w-12 h-12 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                <circle className="stroke-white/10" cx="18" cy="18" fill="none" r="16" strokeWidth="2.5" />
+                <circle className="stroke-primary-container" cx="18" cy="18" fill="none" r="16" strokeDasharray="98.4, 100" strokeLinecap="round" strokeWidth="2.5" />
+              </svg>
+              <span className="absolute text-[8px] font-mono font-black text-secondary">98.4</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[8px] font-mono text-on-surface-variant uppercase">Confidence</span>
+              <span className="text-[10px] font-headline font-black text-primary-container tracking-tighter">MAXIMUM_TRUST</span>
+            </div>
+          </div>
+          <button className="w-10 h-10 flex items-center justify-center border border-primary-container/20 rounded-full hover:bg-primary-container/10 transition-colors text-primary-container">
+            <span className="font-black text-lg leading-none">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CompetitorChartCard({ data }: { data: any }) {
+  const { company, competitors, metrics, strengths, weaknesses } = data
+  const allLabels = [company, ...competitors]
+
+  // Bar chart: Funding comparison
+  const fundingData = {
+    labels: allLabels,
+    datasets: [{
+      label: 'Total Funding ($M)',
+      data: [metrics.fundingM.company, ...metrics.fundingM.competitors],
+      backgroundColor: [
+        'rgba(168, 85, 247, 0.8)',
+        'rgba(3, 225, 255, 0.6)',
+        'rgba(16, 185, 129, 0.6)',
+        'rgba(251, 191, 36, 0.6)',
+      ],
+      borderColor: [
+        'rgba(168, 85, 247, 1)',
+        'rgba(3, 225, 255, 1)',
+        'rgba(16, 185, 129, 1)',
+        'rgba(251, 191, 36, 1)',
+      ],
+      borderWidth: 1,
+      borderRadius: 6,
+    }]
+  }
+
+  const fundingOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Funding Comparison ($M)',
+        color: '#a855f7',
+        font: { size: 11, weight: 'bold' as const, family: 'monospace' },
+        padding: { bottom: 10 },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        titleFont: { size: 11 },
+        bodyFont: { size: 10 },
+        borderColor: 'rgba(168,85,247,0.3)',
+        borderWidth: 1,
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: '#9ca3af', font: { size: 9, family: 'monospace' } },
+        grid: { color: 'rgba(255,255,255,0.03)' },
+      },
+      y: {
+        ticks: { color: '#9ca3af', font: { size: 9 } },
+        grid: { color: 'rgba(255,255,255,0.05)' },
+      },
+    },
+  }
+
+  // Radar chart: Multi-metric comparison
+  const radarData = {
+    labels: ['Market Share', 'Accuracy', 'Growth Rate', 'Customer Base'],
+    datasets: [
+      {
+        label: company,
+        data: [
+          metrics.marketShare.company,
+          metrics.accuracy.company,
+          metrics.growthRate.company,
+          Math.min(metrics.customerBase.company / 10, 100),
+        ],
+        backgroundColor: 'rgba(168, 85, 247, 0.2)',
+        borderColor: 'rgba(168, 85, 247, 1)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+        pointBorderColor: '#fff',
+        pointRadius: 3,
+      },
+      ...competitors.map((comp: string, idx: number) => {
+        const colors = [
+          { bg: 'rgba(3, 225, 255, 0.15)', border: 'rgba(3, 225, 255, 0.8)' },
+          { bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.8)' },
+          { bg: 'rgba(251, 191, 36, 0.15)', border: 'rgba(251, 191, 36, 0.8)' },
+        ]
+        const c = colors[idx % colors.length]
+        return {
+          label: comp,
+          data: [
+            metrics.marketShare.competitors[idx],
+            metrics.accuracy.competitors[idx],
+            metrics.growthRate.competitors[idx],
+            Math.min(metrics.customerBase.competitors[idx] / 10, 100),
+          ],
+          backgroundColor: c.bg,
+          borderColor: c.border,
+          borderWidth: 1.5,
+          pointBackgroundColor: c.border,
+          pointBorderColor: '#fff',
+          pointRadius: 2,
+        }
+      }),
+    ]
+  }
+
+  const radarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          color: '#9ca3af',
+          font: { size: 9, family: 'monospace' },
+          boxWidth: 10,
+          padding: 8,
+        },
+      },
+      title: {
+        display: true,
+        text: 'Competitive Positioning',
+        color: '#03e1ff',
+        font: { size: 11, weight: 'bold' as const, family: 'monospace' },
+        padding: { bottom: 6 },
+      },
+    },
+    scales: {
+      r: {
+        angleLines: { color: 'rgba(255,255,255,0.08)' },
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        pointLabels: { color: '#9ca3af', font: { size: 9, family: 'monospace' } },
+        ticks: { display: false },
+        suggestedMin: 0,
+        suggestedMax: 100,
+      },
+    },
+  }
+
+  return (
+    <div className="flex flex-col gap-6 w-full h-full">
+      <div className="glass-card p-6 flex-1 flex flex-col gap-6 rounded-xl">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col">
+            <span className="font-['JetBrains_Mono'] text-[9px] text-secondary-fixed tracking-[3px] uppercase">Competitor_Landscape_v2</span>
+            <h3 className="font-headline font-black text-xl text-secondary mt-1">{company} vs Market Benchmarks</h3>
+          </div>
+          <div className="p-2 bg-secondary-fixed/10 border border-secondary-fixed/20 rounded-sm">
+            <LineChart className="text-secondary-fixed w-4 h-4" />
+          </div>
+        </div>
+        
+        {/* Charts Grid */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-2 border-b md:border-b-0 md:border-r border-white/5 h-[220px]">
+             <Radar data={radarData} options={radarOptions} />
+          </div>
+          <div className="p-2 h-[220px]">
+             <Bar data={fundingData} options={fundingOptions} />
+          </div>
+        </div>
+        
+        {/* Strengths & Weaknesses (Adapted from original but fitting new style) */}
+        {(strengths?.length > 0 || weaknesses?.length > 0) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/5">
+             <div className="flex flex-col gap-2">
+                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                  <Shield className="w-3 h-3" /> Strengths
+                </span>
+                <ul className="space-y-1">
+                  {strengths?.slice(0, 3).map((s: string, i: number) => (
+                    <li key={i} className="text-[10px] text-on-surface-variant flex items-start gap-1.5">
+                      <span className="text-emerald-500 mt-0.5">✓</span>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+             </div>
+             <div className="flex flex-col gap-2">
+                <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                  <AlertTriangle className="w-3 h-3" /> Weaknesses
+                </span>
+                <ul className="space-y-1">
+                  {weaknesses?.slice(0, 3).map((w: string, i: number) => (
+                    <li key={i} className="text-[10px] text-on-surface-variant flex items-start gap-1.5">
+                      <span className="text-amber-500 mt-0.5">⚠</span>
+                      {w}
+                    </li>
+                  ))}
+                </ul>
+             </div>
+          </div>
+        )}
+      </div>
+      
+      {/* SEC Guideline Alert block from template */}
+      <div className="glass-card p-4 rounded-xl flex items-center gap-4 border-l-4 border-l-secondary-fixed">
+        <div className="w-12 h-12 bg-secondary-fixed/10 flex items-center justify-center rounded-sm">
+          <Network className="text-secondary-fixed w-5 h-5 animate-pulse" />
+        </div>
+        <div className="flex-1">
+          <h4 className="text-[11px] font-black uppercase tracking-wider text-secondary">AURA-3 FORECAST</h4>
+          <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Institutional liquidity impact: <span className="text-secondary-fixed font-bold">Positive correlation</span> anticipated based on analysis.</p>
+        </div>
+        <button className="px-4 py-2 border border-secondary-fixed/30 text-[9px] font-black uppercase text-secondary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-all cursor-pointer">Impact Audit</button>
+      </div>
+    </div>
+  )
+}
+
+function ChatNewsCard({ data }: { data: any }) {
+  if (!data?.articles?.length) return null
+  const fallbackImage = "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
+  return (
+    <div className="mb-4 mt-2">
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <Newspaper className="w-4 h-4 text-[#03e1ff]" />
+        <h3 className="text-[11px] font-bold text-white uppercase tracking-widest">
+          Live Market Intel: <span className="text-[#a855f7]">${data.symbol}</span>
+        </h3>
+      </div>
+      <div className="flex flex-col gap-2">
+        {data.articles.map((item: any, i: number) => (
+          <a
+            key={i}
+            href={item.url || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex gap-3 p-3 bg-white/[0.02] border border-white/5 hover:border-[#03e1ff]/30 rounded-sm transition-all duration-300"
+          >
+            {item.photo && (
+              <div className="w-20 h-20 shrink-0 bg-black/60 overflow-hidden rounded-sm hidden sm:block border border-white/5 group-hover:border-[#03e1ff]/20 transition-colors">
+                <img
+                  src={item.photo}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const img = e.currentTarget
+
+                    if (img.dataset.fallbackApplied !== 'true') {
+                      img.dataset.fallbackApplied = 'true'
+                      img.src = fallbackImage
+                      return
+                    }
+
+                    if (img.dataset.backupApplied !== 'true') {
+                      img.dataset.backupApplied = 'true'
+                      img.src = `https://picsum.photos/seed/finscope-${i}/240/240`
+                      return
+                    }
+
+                    img.style.display = 'none'
+                  }}
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                />
+              </div>
+            )}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">{item.source}</span>
+                <span className="text-[9px] font-mono text-gray-700">|</span>
+                <span className="text-[9px] font-mono text-gray-500">{item.time ? new Date(item.time).toLocaleDateString() : 'Recent'}</span>
+                {item.sentiment && (
+                  <>
+                    <div className="flex-1" />
+                    <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-sm border ${
+                      item.sentiment === 'positive' ? 'text-emerald-400 border-emerald-400/20 bg-emerald-400/10' :
+                      item.sentiment === 'negative' ? 'text-rose-400 border-rose-400/20 bg-rose-400/10' :
+                      'text-sky-400 border-sky-400/20 bg-sky-400/10'
+                    }`}>
+                      {item.sentiment.toUpperCase()}
+                    </span>
+                  </>
+                )}
+              </div>
+              <h4 className="text-[12px] font-medium text-gray-300 group-hover:text-[#03e1ff] line-clamp-2 mb-1.5 leading-snug transition-colors">
+                {item.title}
+              </h4>
+              <p className="text-[10px] text-gray-500 line-clamp-2 leading-relaxed">
+                {item.snippet}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
+  const [risk, setRisk] = useState('Moderate')
+  const [horizon, setHorizon] = useState('3-7 yrs')
+  const [goal, setGoal] = useState('')
+
+  const submit = () => {
+    onSubmit(`My Risk Tolerance is ${risk}, Time Horizon is ${horizon}, and my goal is ${goal || 'General Wealth Generation'}. Please provide my allocation.`)
+  }
+
+  return (
+    <div className="mb-4 mt-3 p-5 rounded-xl border border-[#03e1ff]/30 bg-gradient-to-br from-[#03e1ff]/10 to-transparent backdrop-blur-md shadow-[0_0_20px_rgba(3,225,255,0.05)]">
+      <h3 className="text-[13px] font-extrabold text-white mb-4 flex items-center gap-2 uppercase tracking-wide">
+        <Brain className="w-4 h-4 text-[#03e1ff]" /> Build Custom Portfolio
+      </h3>
+      
+      <div className="space-y-5">
+        <div>
+          <label className="text-[10px] uppercase font-mono text-[#03e1ff] mb-2.5 block tracking-widest font-bold">Risk Tolerance</label>
+          <div className="flex flex-wrap gap-2">
+            {['Conservative', 'Moderate', 'Aggressive'].map(r => (
+              <button 
+                key={r} 
+                onClick={() => setRisk(r)} 
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${risk === r ? 'bg-[#03e1ff] text-black border-[#03e1ff] shadow-[0_0_10px_rgba(3,225,255,0.4)]' : 'bg-black/50 text-gray-400 border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-[10px] uppercase font-mono text-[#a855f7] mb-2.5 block tracking-widest font-bold">Time Horizon</label>
+          <div className="flex flex-wrap gap-2">
+            {['< 3 yrs', '3-7 yrs', '10+ yrs'].map(h => (
+              <button 
+                key={h} 
+                onClick={() => setHorizon(h)} 
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${horizon === h ? 'bg-[#a855f7] text-white border-[#a855f7] shadow-[0_0_10px_rgba(168,85,247,0.4)]' : 'bg-black/50 text-gray-400 border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+              >
+                {h}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-[10px] uppercase font-mono text-emerald-400 mb-2 block tracking-widest font-bold">Primary Goal</label>
+          <input 
+            type="text" 
+            value={goal} 
+            onChange={e => setGoal(e.target.value)} 
+            placeholder="e.g. Retirement, House Downpayment..." 
+            className="w-full bg-black/60 border border-white/10 rounded-lg px-3.5 py-2.5 text-[12px] text-white focus:outline-none focus:border-emerald-500/50 transition-colors" 
+          />
+        </div>
+
+        <button 
+          onClick={submit} 
+          className="w-full mt-2 py-3 bg-gradient-to-r from-[#03e1ff] to-[#a855f7] text-white font-extrabold text-[12px] rounded-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest"
+        >
+          <Sparkles className="w-4 h-4" /> Calculate Asset Allocation
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default function FinScopePage() {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [attachedFile, setAttachedFile] = useState<File | null>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [logs, setLogs] = useState<string[]>([])
+
+  const { currentUser, userRole, loading } = useAuth()
+  const router = useRouter()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [pastChats, setPastChats] = useState<{id: string, title: string, timestamp: string}[]>([])
+  
+  const [sessionId, setSessionId] = useState<string>('')
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (!currentUser) {
+      router.push('/auth/investor');
+      return;
+    }
+
+    if (userRole === 'startup') {
+      router.push('/startup');
+    }
+  }, [loading, currentUser, userRole, router]);
+
+  useEffect(() => {
+    // Generate initial session id
+    setSessionId(`fs_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`)
+  }, [])
+
+  // Listen to past chats
+  useEffect(() => {
+    if (!currentUser) return;
+    const q = query(collection(db, 'users', currentUser.uid, 'chats'), orderBy('updatedAt', 'desc'));
+    const unsub = onSnapshot(q, (snap) => {
+      setPastChats(snap.docs.map(d => ({
+        id: d.id,
+        title: d.data().title || 'New Chat',
+        timestamp: d.data().updatedAt?.toDate()?.toLocaleDateString() || ''
+      })))
+    });
+    return unsub;
+  }, [currentUser]);
+
+  const loadChat = async (id: string) => {
+    if (!currentUser) return;
+    setSessionId(id);
+    const msgsRef = collection(db, 'users', currentUser.uid, 'chats', id, 'messages');
+    const q = query(msgsRef, orderBy('timestamp', 'asc'));
+    const snap = await getDocs(q);
+    const loadedMsgs = snap.docs.map(d => ({
+      role: d.data().role,
+      content: d.data().content,
+      agent: d.data().agent,
+      file: d.data().file,
+      timestamp: d.data().timestamp?.toDate() || new Date()
+    })) as ChatMessage[];
+    setMessages(loadedMsgs);
+    setSidebarOpen(false);
+  }
+
+  const startNewChat = () => {
+    setMessages([]);
+    setSessionId(`fs_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+    setSidebarOpen(false);
+  }
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    let socket: any;
+    if (!SOCKET_BASE) {
+      setLogs((prev) => [...prev, 'Socket URL is not configured.'].slice(-80));
+      return;
+    }
+    import('socket.io-client').then(({ io }) => {
+      socket = io(SOCKET_BASE); // Connect to FastAPI socket.io
+      
+      socket.on('log_stream', (data: { message?: string }) => {
+        const rawMessage = typeof data?.message === 'string' ? data.message : '';
+        const parsedLogs = rawMessage
+          .replace(/\r/g, '\n')
+          .split('\n')
+          .map((line) => line.trimEnd())
+          .filter(Boolean);
+
+        if (parsedLogs.length === 0) return;
+
+        setLogs(prev => {
+          const newLogs = [...prev, ...parsedLogs];
+          return newLogs.slice(-80); // Keep a richer logs backlog
+        });
+      });
+
+      socket.on('connect_error', () => {
+        setLogs((prev) => [...prev, 'Socket connection error to backend log stream.'].slice(-80));
+      });
+    });
+
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs = 45000) => {
+    const controller = new AbortController()
+    const timer = window.setTimeout(() => controller.abort(), timeoutMs)
+
+    try {
+      return await fetch(url, { ...options, signal: controller.signal })
+    } finally {
+      window.clearTimeout(timer)
+    }
+  }
+
+  const runWithTimeout = async <T,>(promise: Promise<T>, timeoutMs = 12000): Promise<T> => {
+    let timer: number | undefined
+    try {
+      return await Promise.race([
+        promise,
+        new Promise<T>((_, reject) => {
+          timer = window.setTimeout(() => reject(new Error('Operation timed out')), timeoutMs)
+        }),
+      ])
+    } finally {
+      if (timer !== undefined) {
+        window.clearTimeout(timer)
+      }
+    }
+  }
+
+  const persistChatMessage = async (payload: {
+    role: 'user' | 'assistant'
+    content: string
+    file?: string | null
+    agent?: string | null
+  }) => {
+    if (!currentUser || !sessionId) return
+
+    const chatRef = doc(db, 'users', currentUser.uid, 'chats', sessionId)
+    const chatMeta: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    }
+
+    if (payload.role === 'user' && messages.length === 0) {
+      const trimmed = payload.content.trim()
+      chatMeta.title = trimmed ? `${trimmed.slice(0, 30)}...` : 'New Chat'
+    }
+
+    await runWithTimeout(
+      setDoc(chatRef, chatMeta, { merge: true }),
+    )
+
+    await runWithTimeout(
+      addDoc(collection(chatRef, 'messages'), {
+        role: payload.role,
+        content: payload.content,
+        file: payload.file || null,
+        agent: payload.agent || null,
+        timestamp: serverTimestamp(),
+      }),
+    )
+  }
+
+  const sendMessage = async (overrideInput?: string | any) => {
+    let finalInput = input
+    if (typeof overrideInput === 'string') {
+      finalInput = overrideInput
+    }
+    
+    if ((!finalInput.trim() && !attachedFile) || isLoading) return
+
+    const userContent = finalInput.trim() || (attachedFile ? `Analyze this document: ${attachedFile.name}` : '')
+    const userMsg: ChatMessage = {
+      role: 'user',
+      content: userContent,
+      file: attachedFile?.name,
+      timestamp: new Date(),
+    }
+    setMessages(prev => [...prev, userMsg])
+    if (overrideInput === undefined) setInput('')
+    setLogs([]) // Clear previous logs
+    setIsLoading(true)
+
+    persistChatMessage({
+      role: 'user',
+      content: userContent,
+      file: attachedFile?.name || null,
+    }).catch((err) => {
+      console.warn('Non-blocking save failed for user message:', err)
+    })
+
+    const currentFile = attachedFile
+    setAttachedFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+
+    try {
+      if (currentFile) {
+        // Upload document + analyze
+        const formData = new FormData()
+        formData.append('document', currentFile)
+        formData.append('session_id', sessionId)
+        const res = await fetchWithTimeout(`${API_BASE}/finscope/analyze-document`, {
+          method: 'POST',
+          body: formData,
+        }, 120000)
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.detail || 'Analysis failed')
+        const assistantMsgStr = data.analysis || 'Could not analyze the document.'
+        const agentResp = data.agent_used || 'Document Analyzer'
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: assistantMsgStr,
+          agent: agentResp,
+          timestamp: new Date(),
+        }])
+        
+        persistChatMessage({
+          role: 'assistant',
+          content: assistantMsgStr,
+          agent: agentResp,
+        }).catch((err) => {
+          console.warn('Non-blocking save failed for assistant message:', err)
+        })
+      } else {
+        // Normal chat — include session_id so backend can pull stored doc context
+        const res = await fetchWithTimeout(`${API_BASE}/finscope/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: userContent,
+            user_profile: 'beginner',
+            session_id: sessionId,
+          }),
+        }, 60000)
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.detail || 'Something went wrong')
+        const assistantMsgStr = data.answer || 'No response.'
+        const agentResp = data.agent_used
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: assistantMsgStr,
+          agent: agentResp,
+          timestamp: new Date(),
+        }])
+
+        persistChatMessage({
+          role: 'assistant',
+          content: assistantMsgStr,
+          agent: agentResp || null,
+        }).catch((err) => {
+          console.warn('Non-blocking save failed for assistant message:', err)
+        })
+      }
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error
+        ? (err.name === 'AbortError'
+            ? 'Request timed out. Backend is taking too long or is unavailable.'
+            : err.message)
+        : 'Connection error. Is the backend running?'
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: errorMsg,
+        timestamp: new Date(),
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) setAttachedFile(file)
+  }
+
+  const suggestedQuestions = [
+    "What is angel investing and how do I start?",
+    "How should a retiree build their portfolio?",
+    "Explain mutual funds vs ETFs simply",
+    "What metrics matter when evaluating a startup?",
+  ]
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 rounded-full border-2 border-[#03e1ff] border-t-transparent animate-spin"></div>
+      </div>
+    )
+  }
+
+  if (!currentUser || userRole !== 'investor') {
+    return null
+  }
+
+  return (
+    <div className="bg-background text-on-surface w-full h-[100vh] grid-bg font-body m-0 p-0 overflow-hidden flex">
+
+      {/* Sidebar for Chat History */}
+      <aside className={`fixed inset-y-0 left-0 w-64 bg-surface-container border-r border-[#03e1ff]/10 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
+        <div className="p-4 flex flex-col h-full mt-20">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-secondary font-headline tracking-widest uppercase text-sm">Past Data Links</h2>
+            <button onClick={() => setSidebarOpen(false)} className="text-on-surface-variant hover:text-white">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <button onClick={startNewChat} className="mb-4 w-full py-2 bg-[#03e1ff]/10 border border-[#03e1ff]/30 text-[#03e1ff] hover:bg-[#03e1ff]/20 text-xs font-mono uppercase tracking-widest transition-colors rounded-sm flex items-center justify-center gap-2">
+            <MessageSquare className="w-4 h-4" /> New Analysis
+          </button>
+          <div className="flex-1 overflow-y-auto pr-2 space-y-2">
+            {pastChats.map(chat => (
+              <button key={chat.id} onClick={() => loadChat(chat.id)} className={`w-full text-left p-3 rounded-sm border ${sessionId === chat.id ? 'bg-[#03e1ff]/5 border-[#03e1ff]/30 text-white' : 'bg-transparent border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200'} transition-all group`}>
+                <div className="text-xs font-bold line-clamp-1 group-hover:text-[#03e1ff] transition-colors">{chat.title}</div>
+                <div className="text-[9px] font-mono mt-1 opacity-60">{chat.timestamp}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Chat Interface */}
+      <main className="flex-1 flex flex-col h-full relative">
+        <button onClick={() => setSidebarOpen(true)} className="absolute top-24 left-4 z-40 p-2 bg-surface-container border border-white/10 rounded-sm hover:bg-white/5 transition-colors text-white hidden md:block">
+          <Menu className="w-5 h-5" />
+        </button>
+      
+
+        <div className="flex-1 overflow-y-auto terminal-scroll pb-28 pt-8" id="chat-container">
+          <div className="max-w-5xl mx-auto px-4 md:px-8 flex flex-col gap-10">
+            {/* Empty State */}
+            {messages.length === 0 && (
+              <div className="flex flex-col items-center justify-center pt-[10vh] text-center max-w-2xl mx-auto">
+                <div className="w-16 h-16 rounded-xl bg-surface-container-highest border border-primary-container/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(3,225,255,0.1)] hero-clip">
+                  <Brain className="w-8 h-8 text-primary-container animate-pulse" />
+                </div>
+                <h2 className="text-3xl font-headline font-black text-secondary mb-3 tracking-tight">System Initialized</h2>
+                <p className="text-xs text-on-surface-variant mb-10 font-mono leading-relaxed max-w-lg">
+                  AURA-3 intelligence protocol active. Upload documentation for deep analysis or query market benchmarks to begin synthetic evaluation.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                  {suggestedQuestions.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setInput(q)}
+                      className="text-left text-[11px] text-on-surface-variant hover:text-primary-container px-5 py-4 bg-surface-container-low/50 border border-white/5 hover:border-primary-container/30 rounded-lg transition-all group glass-card flex items-center gap-3"
+                    >
+                      <span className="text-primary-container/50 group-hover:text-primary-container font-mono text-lg">›</span>
+                      <span className="font-medium leading-snug">{q}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Messages */}
+            {messages.map((msg, i) => {
+              let finalOutput = { cleanContent: msg.content, videos: [] as any[], flashcard: null as any, competitorData: null as any, newsData: null as any, hasForm: false }
+              
+              if (msg.role === 'assistant') {
+                const ytExtracted = extractYouTubeVideos(msg.content)
+                const fcExtracted = extractFlashcard(ytExtracted.cleanContent)
+                const ccExtracted = extractCompetitorChart(fcExtracted.cleanContent)
+                const newsExtracted = extractNewsCard(ccExtracted.cleanContent)
+                const formExtracted = extractInteractiveForm(newsExtracted.cleanContent)
+                
+                finalOutput = {
+                  videos: ytExtracted.videos,
+                  flashcard: fcExtracted.flashcard,
+                  competitorData: ccExtracted.competitorData,
+                  newsData: newsExtracted.newsData,
+                  cleanContent: formExtracted.cleanContent,
+                  hasForm: formExtracted.hasForm
+                }
+              }
+              
+              const { cleanContent, videos, flashcard, competitorData, newsData, hasForm } = finalOutput
+
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex flex-col w-full ${msg.role === 'user' ? 'items-end' : 'items-start'} max-w-5xl`}
+                >
+                  {msg.role === 'user' ? (
+                    <div className="flex flex-col items-end gap-3 max-w-xl">
+                      <div className="bg-primary-container/5 backdrop-blur-xl p-5 border border-primary-container/20 glow-msg-user rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md">
+                        {msg.file && (
+                          <div className="flex items-center gap-2 mb-3 pb-3 border-b border-primary-container/20">
+                            <FileText className="w-3.5 h-3.5 text-primary-container" />
+                            <span className="text-[10px] font-mono text-primary-container uppercase">{msg.file}</span>
+                          </div>
+                        )}
+                        <p className="font-headline font-medium text-secondary text-[13px] leading-relaxed">{msg.content}</p>
+                      </div>
+                      <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest opacity-70">
+                        {msg.timestamp.toLocaleTimeString()} | ENCRYPTED
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-start gap-4 w-full">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-6 bg-tertiary"></div>
+                        <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-tertiary">
+                          {msg.agent ? msg.agent : "FinScope Intelligence"}
+                        </span>
+                      </div>
+                      <div className="bg-surface-variant/20 backdrop-blur-xl p-6 md:p-8 border border-tertiary/10 glow-msg-ai rounded-tr-3xl rounded-bl-3xl w-full max-w-4xl">
+                        <div className="text-[13px] leading-relaxed text-secondary markdown-content font-light flex flex-col gap-4">
+                          {cleanContent && <ReactMarkdown>{cleanContent}</ReactMarkdown>}
+                          {newsData && <ChatNewsCard data={newsData} />}
+                          {hasForm && <PortfolioFormCard onSubmit={sendMessage} />}
+                          
+                          {/* Videos */}
+                          {videos.length > 0 && (
+                            <div className="mt-8 pt-6 border-t border-white/10 w-full">
+                              <p className="text-[10px] font-bold font-mono text-primary-container uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                Deep-dive Video Analysis
+                              </p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {videos.map((v, vi) => (
+                                  <YouTubeCard key={vi} video={v} />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Bento grid for custom blocks */}
+                      {(flashcard || competitorData) && (
+                        <div className="flex flex-col items-start gap-6 max-w-5xl w-full mt-4">
+                          <div className="flex items-center gap-3 ml-2">
+                            <div className="w-2 h-6 bg-primary-container"></div>
+                            <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-primary-container">Synthesis Result</span>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
+                            {flashcard && (
+                              <div className={competitorData ? "col-span-1 md:col-span-5" : "col-span-1 md:col-span-12"}>
+                                <StartupFlashCard flashcard={flashcard} />
+                              </div>
+                            )}
+                            {competitorData && (
+                              <div className={flashcard ? "col-span-1 md:col-span-7" : "col-span-1 md:col-span-12"}>
+                                <CompetitorChartCard data={competitorData} />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest pl-4 opacity-50 mt-1">
+                        {msg.timestamp.toLocaleTimeString()} | AURA-3
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+              )
+            })}
+            
+            {isLoading && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl mb-4 ml-1 md:ml-6 mt-4">
+                <div className="bg-black/90 border border-tertiary/30 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(221,183,255,0.1)] backdrop-blur-xl">
+                   <div className="bg-tertiary/10 px-4 py-2 border-b border-tertiary/20 flex items-center justify-between">
+                     <span className="text-[9px] font-mono font-bold tracking-[3px] text-tertiary uppercase animate-pulse">AURA-3 Subagent Execution Core</span>
+                     <div className="flex gap-1">
+                        <span className="w-2 h-2 rounded-full bg-tertiary/50"></span>
+                        <span className="w-2 h-2 rounded-full bg-tertiary/30"></span>
+                     </div>
+                   </div>
+                   <div className="p-4 font-mono text-[10px] text-on-surface-variant max-h-[250px] overflow-y-auto flex flex-col gap-1 terminal-scroll">
+                     {logs.length === 0 && <span className="opacity-50 text-tertiary">Initializing autonomous agents...</span>}
+                     {logs.map((log, idx) => (
+                       <span key={`${idx}-${log}`} className="text-secondary opacity-90 whitespace-pre-wrap break-words"><span className="text-tertiary mr-2">$</span>{log}</span>
+                     ))}
+                     <span className="text-tertiary animate-pulse inline-block mt-2">_</span>
+                   </div>
+                </div>
+              </motion.div>
+            )}
+            <div ref={chatEndRef} className="h-10" />
+          </div>
+        </div>
+
+        {/* Input Tools Area */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 md:px-8 py-20 z-20 pointer-events-none bg-gradient-to-t from-background via-background/95 to-transparent">
+          <div className="max-w-4xl mx-auto flex flex-col gap-4 pointer-events-auto">
+            
+            {/* Quick Suggestions - hidden if not empty state or if we have attached file */}
+            {messages.length === 0 && !attachedFile && (
+              <div className="flex gap-2 overflow-x-auto terminal-scroll pb-2 hidden sm:flex">
+                {suggestedQuestions.slice(0, 3).map((q, idx) => (
+                  <button key={idx} onClick={() => setInput(q)} className="px-4 py-2 border border-white/5 bg-black/40 backdrop-blur-md rounded-full text-[10px] font-mono text-on-surface-variant hover:text-primary-container hover:border-primary-container/20 whitespace-nowrap transition-colors">
+                     {q.slice(0, 40)}{q.length > 40 ? '...' : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            <div className="bg-surface-container-highest/80 backdrop-blur-2xl border border-white/10 p-2 md:p-3 rounded-2xl flex flex-col shadow-2xl relative group focus-within:border-primary-container/50 transition-colors duration-500">
+              {attachedFile && (
+                <div className="mb-2 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="text-[11px] font-mono text-amber-500 truncate max-w-[200px]">{attachedFile.name}</span>
+                  </div>
+                  <button onClick={() => { setAttachedFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }} className="text-amber-500/60 hover:text-amber-500">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+              
+              <div className="flex items-end gap-3 relative">
+                <input ref={fileInputRef} type="file" accept=".pdf,.docx,.doc,.txt" onChange={handleFileSelect} className="hidden" />
+                <button 
+                  onClick={() => fileInputRef.current?.click()} 
+                  className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-on-surface-variant transition-colors"
+                  title="Upload Document"
+                >
+                  <Paperclip className="w-4 h-4 text-primary-container" />
+                </button>
+                
+                <textarea 
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                  placeholder={attachedFile ? "Ask a question about this document..." : "Transmit intelligence protocol parameters..."}
+                  className="flex-1 bg-transparent border-0 outline-none resize-none h-10 py-3 text-[13px] text-secondary placeholder:text-on-surface-variant/50 font-body terminal-scroll"
+                  disabled={isLoading}
+                  rows={1}
+                />
+                
+                <div className="flex items-center gap-2 shrink-0">
+                   <button 
+                     onClick={() => sendMessage()}
+                     disabled={isLoading || (!input.trim() && !attachedFile)}
+                     className="bg-primary hover:bg-primary-container text-on-primary font-black px-6 h-10 rounded-xl uppercase text-[10px] tracking-widest disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                   >
+                     Submit <Send className="w-3 h-3" />
+                   </button>
+                </div>
+              </div>
+
+              {/* Decorative Corner */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary-container/0 group-focus-within:border-primary-container/50 rounded-tr-2xl transition-colors duration-500 pointer-events-none"></div>
+            </div>
+            
+            <div className="flex justify-center">
+              <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest text-center mt-1">
+                AURA-3 IS A SYNTHETIC INTELLIGENCE. NOT FINANCIAL ADVICE.
+              </span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
