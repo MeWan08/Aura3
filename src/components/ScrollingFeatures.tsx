@@ -19,7 +19,7 @@ const features: Feature[] = [
 if (proposalState.forVotes > proposalState.againstVotes) {
   await ventureDao.executeProposal(id)
 }
-// settlement status: executed`,
+settlement status: executed`,
     language: 'typescript',
   },
   {
@@ -29,7 +29,7 @@ if (proposalState.forVotes > proposalState.againstVotes) {
     code: `POST /api/startups/{id}/documents/upload
 POST /api/startups/{id}/analyze
 GET  /api/startups/{id}/report/status
-// => { status: "complete", analysis: {...} }`,
+  => { status: "complete", analysis: {...} }`,
     language: 'http',
   },
   {
@@ -40,7 +40,7 @@ GET  /api/startups/{id}/report/status
   parseEther(exitValuationEth),
   { value: parseEther(poolDepositEth) }
 )
-// investors can call: exit()`,
+investors can call: exit()`,
     language: 'solidity',
   },
   {
