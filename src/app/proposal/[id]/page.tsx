@@ -44,7 +44,7 @@ export default function ProposalDetail() {
   const { writeContract: writeVote, isPending: isVoting } = useWriteContract()
   const { writeContract: writeExecute, isPending: isExecuting } = useWriteContract()
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://aravsaxena884-dao.hf.space'
   const [isDownloading, setIsDownloading] = useState(false)
   const [backendStartupId, setBackendStartupId] = useState<string | null>(null)
   const source = searchParams.get('source')
@@ -116,7 +116,7 @@ export default function ProposalDetail() {
 
       fetch(`${BACKEND_URL}/startups`)
         .then(res => res.json())
-        .then((startups: any[]) => {
+        .then(async (startups: any[]) => {
           const byFounderAndDescription = startups.find(s =>
             s?.description === description &&
             typeof s?.team === 'string' &&
@@ -135,12 +135,22 @@ export default function ProposalDetail() {
           
           if (matched) {
             setBackendStartupId(matched.startup_id)
-            return fetch(`${BACKEND_URL}/api/startups/${matched.startup_id}/report/status`)
+            for (let i = 0; i < 10; i++) {
+              const reportRes = await fetch(`${BACKEND_URL}/api/startups/${matched.startup_id}/report/status`)
+              const reportData = await reportRes.json()
+              if (reportData && (reportData.status === 'complete' || reportData.status === 'completed')) {
+                return reportData
+              }
+              if (reportData && (reportData.status === 'failed' || reportData.status === 'error')) {
+                throw new Error(reportData.error || 'Analysis generation failed')
+              }
+              await new Promise(resolve => setTimeout(resolve, 3000))
+            }
+            return null
           } else {
             throw new Error('Startup record not found on backend')
           }
         })
-        .then(res => res ? res.json() : null)
         .then(data => {
           if (data && (data.status === 'complete' || data.status === 'completed')) {
             setAiReport(data.analysis || data)
@@ -457,18 +467,16 @@ export default function ProposalDetail() {
         )}
 
         {/* Floating Action Button */}
-        {aiReport && backendStartupId && (
-          <button 
-            onClick={() => setIsChatOpen(!isChatOpen)}
-            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_0_20px_rgba(3,225,255,0.2)] ${
-              isChatOpen 
-                ? 'bg-[#111] border border-[#333] text-gray-400 rotate-90 scale-90' 
-                : 'bg-[#03e1ff] text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(3,225,255,0.4)]'
-            }`}
-          >
-            {isChatOpen ? <X className="w-6 h-6 -rotate-90" /> : <MessageSquare className="w-6 h-6" />}
-          </button>
-        )}
+        <button 
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_0_20px_rgba(3,225,255,0.2)] ${
+            isChatOpen 
+              ? 'bg-[#111] border border-[#333] text-gray-400 rotate-90 scale-90' 
+              : 'bg-[#03e1ff] text-black hover:scale-105 hover:shadow-[0_0_30px_rgba(3,225,255,0.4)]'
+          }`}
+        >
+          {isChatOpen ? <X className="w-6 h-6 -rotate-90" /> : <MessageSquare className="w-6 h-6" />}
+        </button>
       </div>
 
       {/* Startup Management Section */}

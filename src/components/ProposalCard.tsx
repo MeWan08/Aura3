@@ -83,7 +83,7 @@ export function ProposalCard({
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className="glass-panel group relative flex flex-col md:flex-row items-stretch md:items-center py-6 px-8 gap-8 w-full border border-white/5 bg-black/60 shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
+        className="glass-panel group relative flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center py-6 px-8 gap-8 w-full border border-white/5 bg-black/60 shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
       >
         {/* Animated Connecting SVG Border Effect */}
         <div className="absolute inset-0 border border-[#03e1ff]/0 group-hover:border-[#03e1ff]/30 transition-colors duration-500 block pointer-events-none" style={{ transform: "translateZ(-20px)" }} />
@@ -119,10 +119,10 @@ export function ProposalCard({
           </div>
         </div>
 
-        <div className="shrink-0 ml-auto flex items-center relative z-20" style={{ transform: "translateZ(50px)" }}>
+        <div className="shrink-0 ml-0 md:ml-auto flex items-center relative z-20 w-full md:w-auto" style={{ transform: "translateZ(50px)" }}>
           <Link
             href={accessNodeHref}
-            className="flex items-center justify-center px-6 py-3 rounded-sm border border-white/20 group-hover:border-[#03e1ff]/80 transition-all bg-black/80 hover:bg-[#03e1ff]/10 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_20px_rgba(3,225,255,0.4)] overflow-hidden relative"
+            className="flex items-center justify-center px-6 py-3 rounded-sm border border-white/20 group-hover:border-[#03e1ff]/80 transition-all bg-black/80 hover:bg-[#03e1ff]/10 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_20px_rgba(3,225,255,0.4)] overflow-hidden relative w-full md:w-auto"
           >
             <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-[linear-gradient(45deg,transparent_25%,rgba(3,225,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[bg-shift_2s_linear_infinite]" />
             <span className="text-[11px] font-bold font-mono text-sky-300 group-hover:text-white transition-colors tracking-[0.3em] uppercase mr-3 relative z-10">Access Node</span>

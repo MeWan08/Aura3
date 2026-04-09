@@ -43,6 +43,31 @@ ChartJS.register(
 const API_BASE = 'https://aravsaxena884-dao.hf.space'
 const SOCKET_BASE = 'https://aravsaxena884-dao.hf.space'
 
+const JAILBREAK_INPUT_PATTERNS = [
+  /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?)/i,
+  /(system|developer)\s+prompt/i,
+  /act\s+as\s+(a\s+)?(lawyer|doctor|hacker|jailbroken\s+ai)/i,
+  /(bypass|override|disable)\s+(safety|guardrails|policy|policies|rules)/i,
+  /jailbreak|dan\s+mode|do\s+anything\s+now/i,
+  /pretend\s+to\s+be/i,
+]
+
+const INAPPROPRIATE_INPUT_PATTERNS = [
+  /\b(murder|kill|bomb|weapon)\b/i,
+  /\b(hate\s*speech|racist|sexist)\b/i,
+  /\b(porn|sex\s*chat|explicit)\b/i,
+]
+
+function shouldBlockFinScopePrompt(prompt: string): boolean {
+  const normalized = prompt.trim()
+  if (!normalized) return false
+
+  return [
+    ...JAILBREAK_INPUT_PATTERNS,
+    ...INAPPROPRIATE_INPUT_PATTERNS,
+  ].some((pattern) => pattern.test(normalized))
+}
+
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
@@ -812,6 +837,17 @@ export default function FinScopePage() {
     if ((!finalInput.trim() && !attachedFile) || isLoading) return
 
     const userContent = finalInput.trim() || (attachedFile ? `Analyze this document: ${attachedFile.name}` : '')
+
+    if (shouldBlockFinScopePrompt(userContent)) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Request blocked by safety policy. Please ask a finance-focused question without jailbreak or harmful instructions.',
+        timestamp: new Date(),
+      }])
+      if (overrideInput === undefined) setInput('')
+      return
+    }
+
     const userMsg: ChatMessage = {
       role: 'user',
       content: userContent,
