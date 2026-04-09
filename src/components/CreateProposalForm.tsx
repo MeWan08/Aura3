@@ -19,7 +19,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const { data: hash, writeContract, error: writeError, isPending: isConfirmingInWallet } = useWriteContract()
   const { isLoading: isMining, isSuccess } = useWaitForTransactionReceipt({ hash })
 
-  const BACKEND_URL = 'http://localhost:3001'
+  const BACKEND_URL = 'https://aravsaxena884-dao.hf.space'
 
   const handleAnalyzeAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
