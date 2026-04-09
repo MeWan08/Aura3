@@ -106,16 +106,8 @@ export function NewsCards() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="relative w-full mt-0 pb-8 overflow-hidden rounded-xl border border-[#03e1ff]/15 bg-[#060a0f]"
+      className="w-full mt-16 pb-8"
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(3,225,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(3,225,255,0.03)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
-        <div className="absolute -top-24 -left-20 w-[360px] h-[360px] rounded-full bg-[#03e1ff]/20 blur-[100px] animate-[pulse_8s_ease-in-out_infinite]" />
-        <div className="absolute -bottom-24 -right-20 w-[380px] h-[380px] rounded-full bg-[#00ffbd]/16 blur-[110px] animate-[pulse_10s_ease-in-out_infinite]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_20%,rgba(3,225,255,0.14),transparent_32%),radial-gradient(circle_at_78%_75%,rgba(0,255,189,0.1),transparent_30%)]" />
-      </div>
-
-      <div className="relative z-10 px-5 py-6 md:px-6 md:py-8">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
@@ -142,8 +134,6 @@ export function NewsCards() {
         {news.map((item, i) => {
           const fallbackImage = CRYPTO_IMAGES[i % CRYPTO_IMAGES.length]
           const imageUrl = item.article_photo_url || fallbackImage
-          const hasRemoteImage = Boolean(item.article_photo_url)
-          const gradientClass = CARD_GRADIENTS[i % CARD_GRADIENTS.length]
 
           return (
             <motion.a
@@ -158,40 +148,32 @@ export function NewsCards() {
             >
               {/* Photo - Always shown with fallback */}
               <div className="h-48 w-full overflow-hidden bg-black/60 relative">
-                {hasRemoteImage ? (
-                  <img
-                    src={imageUrl}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      const img = e.currentTarget
-                      const fallback = CRYPTO_IMAGES[(i + 1) % CRYPTO_IMAGES.length]
+                <img
+                  src={imageUrl}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const img = e.currentTarget
+                    const fallback = CRYPTO_IMAGES[(i + 1) % CRYPTO_IMAGES.length]
 
-                      if (img.dataset.fallbackApplied !== 'true') {
-                        img.dataset.fallbackApplied = 'true'
-                        img.src = fallback
-                        return
-                      }
+                    if (img.dataset.fallbackApplied !== 'true') {
+                      img.dataset.fallbackApplied = 'true'
+                      img.src = fallback
+                      return
+                    }
 
-                      if (img.dataset.backupApplied !== 'true') {
-                        img.dataset.backupApplied = 'true'
-                        img.src = `https://picsum.photos/seed/market-${i}/1200/700`
-                        return
-                      }
+                    // Last-resort safe image host if Unsplash URL also fails.
+                    if (img.dataset.backupApplied !== 'true') {
+                      img.dataset.backupApplied = 'true'
+                      img.src = `https://picsum.photos/seed/market-${i}/1200/700`
+                      return
+                    }
 
-                      img.style.display = 'none'
-                    }}
-                    className="w-full h-full object-cover opacity-65 saturate-[1.25] brightness-[0.85] group-hover:opacity-85 group-hover:scale-110 transition-all duration-700"
-                  />
-                ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass}`}>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(3,225,255,0.35),transparent_40%),radial-gradient(circle_at_75%_70%,rgba(0,255,189,0.25),transparent_38%)] animate-[pulse_8s_ease-in-out_infinite]" />
-                  </div>
-                )}
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/48 to-black/18" />
-                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(3,225,255,0.2),transparent_45%,rgba(0,255,189,0.15))] mix-blend-screen" />
-                <div className="absolute inset-0 opacity-35 bg-[linear-gradient(to_bottom,transparent_0%,rgba(3,225,255,0.08)_50%,transparent_100%)] animate-[pulse_6s_ease-in-out_infinite]" />
+                    img.style.display = 'none'
+                  }}
+                  className="w-full h-full object-cover opacity-50 group-hover:opacity-75 group-hover:scale-110 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 
                 {/* Symbol badge overlay */}
                 {item.related_symbol && (
@@ -237,7 +219,6 @@ export function NewsCards() {
             </motion.a>
           )
         })}
-      </div>
       </div>
     </motion.section>
   )
