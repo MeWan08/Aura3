@@ -102,10 +102,7 @@ export function NewsCards() {
   if (news.length === 0) return null
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.6 }}
+    <section
       className="w-full mt-16 pb-8"
     >
       {/* Section Header */}
@@ -129,8 +126,8 @@ export function NewsCards() {
         </div>
       </div>
 
-      {/* News Grid - Bigger cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* News Grid - Optimized for visibility */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {news.map((item, i) => {
           const fallbackImage = CRYPTO_IMAGES[i % CRYPTO_IMAGES.length]
           const imageUrl = item.article_photo_url || fallbackImage
@@ -141,17 +138,18 @@ export function NewsCards() {
               href={item.article_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + i * 0.1 }}
-              className="group relative bg-white/[0.03] border border-white/[0.07] hover:border-[#03e1ff]/40 rounded-xl overflow-hidden transition-all duration-400 hover:shadow-[0_0_40px_rgba(3,225,255,0.08)] hover:bg-white/[0.05]"
+              transition={{ duration: 0.4, delay: 0.1 * i }}
+              className="group relative bg-gradient-to-br from-[#0a1520] to-[#050c1a] border border-[#03e1ff]/20 hover:border-[#03e1ff]/60 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(3,225,255,0.15)] h-full flex flex-col"
             >
-              {/* Photo - Always shown with fallback */}
-              <div className="h-48 w-full overflow-hidden bg-black/60 relative">
+              {/* Photo Container */}
+              <div className="h-40 w-full overflow-hidden bg-black/80 relative flex-shrink-0">
                 <img
                   src={imageUrl}
-                  alt=""
+                  alt={item.article_title || 'News article'}
                   referrerPolicy="no-referrer"
+                  loading="lazy"
                   onError={(e) => {
                     const img = e.currentTarget
                     const fallback = CRYPTO_IMAGES[(i + 1) % CRYPTO_IMAGES.length]
@@ -162,64 +160,64 @@ export function NewsCards() {
                       return
                     }
 
-                    // Last-resort safe image host if Unsplash URL also fails.
                     if (img.dataset.backupApplied !== 'true') {
                       img.dataset.backupApplied = 'true'
-                      img.src = `https://picsum.photos/seed/market-${i}/1200/700`
+                      img.src = `https://picsum.photos/seed/market-${i}/800/600`
                       return
                     }
 
                     img.style.display = 'none'
                   }}
-                  className="w-full h-full object-cover opacity-50 group-hover:opacity-75 group-hover:scale-110 transition-all duration-700"
+                  className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
                 
-                {/* Symbol badge overlay */}
+                {/* Symbol badge */}
                 {item.related_symbol && (
-                  <div className="absolute top-4 left-4">
-                    <span className="text-[11px] font-bold font-mono text-[#a855f7] bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#a855f7]/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="text-[10px] font-bold font-mono text-[#a855f7] bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-md border border-[#a855f7]/40 shadow-lg">
                       ${item.related_symbol}
                     </span>
                   </div>
                 )}
 
-                {/* Source badge overlay */}
-                <div className="absolute top-4 right-4">
-                  <span className="text-[10px] font-mono text-gray-300 bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 uppercase tracking-wider">
-                    {item.source || 'Market'}
+                {/* Source badge */}
+                <div className="absolute top-3 right-3 z-10">
+                  <span className="text-[9px] font-mono text-[#03e1ff] bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-md border border-[#03e1ff]/30 uppercase tracking-wide">
+                    {item.source || 'News'}
                   </span>
                 </div>
               </div>
 
-              <div className="p-5 relative">
+              {/* Content Container */}
+              <div className="p-4 relative flex-1 flex flex-col">
                 {/* Title */}
-                <h3 className="text-base font-bold text-gray-200 group-hover:text-white transition-colors leading-snug line-clamp-2 mb-3">
+                <h3 className="text-sm font-bold text-gray-100 group-hover:text-[#03e1ff] transition-colors leading-tight line-clamp-2 mb-2">
                   {item.article_title || 'Breaking news...'}
                 </h3>
 
                 {/* Snippet */}
                 {item.snippet && (
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
+                  <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 mb-3 flex-1">
                     {item.snippet}
                   </p>
                 )}
 
                 {/* Footer */}
-                <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
-                  <Clock className="w-3.5 h-3.5 text-gray-600" />
-                  <span className="text-[11px] font-mono text-gray-600">
-                    {item.post_time_utc ? new Date(item.post_time_utc).toLocaleString() : 'Just now'}
+                <div className="flex items-center gap-2 pt-3 border-t border-white/[0.08] text-[10px] text-gray-500">
+                  <Clock className="w-3 h-3 flex-shrink-0" />
+                  <span className="font-mono truncate">
+                    {item.post_time_utc ? new Date(item.post_time_utc).toLocaleDateString() : 'Today'}
                   </span>
                   <div className="flex-1" />
-                  <TrendingUp className="w-4 h-4 text-emerald-500/70 group-hover:text-emerald-400 transition-colors" />
-                  <ExternalLink className="w-4 h-4 text-gray-600 group-hover:text-[#03e1ff] transition-colors" />
+                  <TrendingUp className="w-3 h-3 text-emerald-500/60 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
+                  <ExternalLink className="w-3 h-3 text-gray-600 group-hover:text-[#03e1ff] transition-colors flex-shrink-0" />
                 </div>
               </div>
             </motion.a>
           )
         })}
       </div>
-    </motion.section>
+    </section>
   )
 }
