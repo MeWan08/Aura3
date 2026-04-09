@@ -109,24 +109,65 @@
 :root {
   --tensor-cyan: #03e1ff;
   --tensor-green: #00ffbd;
-  --tensor-bg: #000000;
-  --tensor-border: #111111;
-  --tensor-surface: #050505;
+  --tensor-bg: #ffffff;
+  --tensor-border: #d4d4d8;
+  --tensor-surface: #ffffff;
   --font-mono: 'Roboto Mono', monospace;
 }
 
 body {
   background-color: var(--tensor-bg);
-  background: radial-gradient(circle at top, rgba(3, 225, 255, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at bottom right, rgba(0, 255, 189, 0.03) 0%, transparent 40%),
-              var(--tensor-bg);
-  color: #f0f0f0;
+  background: #ffffff;
+  color: #000000;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
+}
+
+html,
+body {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Global readability overrides for pages with hardcoded dark utilities */
+[class*="bg-black"],
+[class*="bg-[#0"],
+[class*="bg-[#1"],
+[class*="bg-[#2"],
+[class*="bg-[#3"],
+[class*="bg-gray-9"],
+[class*="bg-zinc-9"],
+[class*="bg-neutral-9"],
+[class*="bg-surface"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+[class*="text-white"],
+[class*="text-gray-"],
+[class*="text-on-surface"] {
+  color: #000000 !important;
+}
+
+input,
+textarea,
+select {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #d4d4d8 !important;
+}
+
+[class*="text-[9px]"],
+[class*="text-[10px]"],
+[class*="text-[11px]"],
+[class*="text-[12px]"] {
+  font-size: 0.95rem !important;
 }
 
 @layer utilities {

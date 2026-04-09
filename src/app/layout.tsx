@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} min-h-screen bg-[#000000] text-gray-100 selection:bg-[#03e1ff]/30`}>
+    <html lang="en">
+      <body className={`${inter.className} min-h-screen bg-white text-black text-[17px] md:text-[18px] selection:bg-gray-300`}>
         <CustomCursor />
         <AuthProvider>
           <Providers>
