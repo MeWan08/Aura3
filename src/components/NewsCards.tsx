@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Newspaper, ExternalLink, TrendingUp, Clock } from 'lucide-react'
-import { CardBody, CardContainer, CardItem } from '@/components/3d-card'
+import { CardBody, CardContainer, CardItem } from './3d-card'
 
 const API_BASE = 'https://aravsaxena884-dao.hf.space'
 
