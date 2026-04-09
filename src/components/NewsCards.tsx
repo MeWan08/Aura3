@@ -97,8 +97,16 @@ export function NewsCards() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="w-full mt-16 pb-8"
+      className="relative w-full mt-16 pb-8 overflow-hidden rounded-xl border border-[#03e1ff]/15 bg-[#060a0f]"
     >
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(3,225,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(3,225,255,0.03)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
+        <div className="absolute -top-24 -left-20 w-[360px] h-[360px] rounded-full bg-[#03e1ff]/20 blur-[100px] animate-[pulse_8s_ease-in-out_infinite]" />
+        <div className="absolute -bottom-24 -right-20 w-[380px] h-[380px] rounded-full bg-[#00ffbd]/16 blur-[110px] animate-[pulse_10s_ease-in-out_infinite]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_20%,rgba(3,225,255,0.14),transparent_32%),radial-gradient(circle_at_78%_75%,rgba(0,255,189,0.1),transparent_30%)]" />
+      </div>
+
+      <div className="relative z-10 px-5 py-6 md:px-6 md:py-8">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
@@ -210,6 +218,7 @@ export function NewsCards() {
             </motion.a>
           )
         })}
+      </div>
       </div>
     </motion.section>
   )
