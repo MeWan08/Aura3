@@ -5,11 +5,15 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagm
 import { VENTUREDAO_ADDRESS, VENTUREDAO_ABI } from '@/constants/abis'
 import { parseEther } from 'viem'
 import { Loader2, UploadCloud, Rocket } from 'lucide-react'
+import { useEthPrice } from '@/hooks/useEthPrice'
 
 export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const { address } = useAccount()
+  const ethPrice = useEthPrice()
   const [fundingAmount, setFundingAmount] = useState('')
   const [valuation, setValuation] = useState('')
+  const [fundingUnit, setFundingUnit] = useState<'eth' | 'usd'>('eth')
+  const [valuationUnit, setValuationUnit] = useState<'eth' | 'usd'>('eth')
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   
@@ -19,11 +23,36 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const { data: hash, writeContract, error: writeError, isPending: isConfirmingInWallet } = useWriteContract()
   const { isLoading: isMining, isSuccess } = useWaitForTransactionReceipt({ hash })
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://aravsaxena884-dao.hf.space'
+  const BACKEND_URL = 'https://aravsaxena884-dao.hf.space'
+
+  const convertToEth = (raw: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(raw)
+    if (isNaN(numeric) || numeric <= 0) return 0
+    if (unit === 'eth') return numeric
+    if (!ethPrice || ethPrice <= 0) return 0
+    return numeric / ethPrice
+  }
+
+  const formatEthString = (amount: number) => {
+    if (!Number.isFinite(amount) || amount <= 0) return ''
+    return amount.toFixed(8).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1')
+  }
+
+  const convertDisplayUnit = (value: string, from: 'eth' | 'usd', to: 'eth' | 'usd') => {
+    if (from === to) return value
+    const numeric = Number(value)
+    if (isNaN(numeric) || numeric <= 0) return value
+    if (!ethPrice || ethPrice <= 0) return value
+    const converted = from === 'eth' ? numeric * ethPrice : numeric / ethPrice
+    return converted.toFixed(2)
+  }
 
   const handleAnalyzeAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!address || !fundingAmount || !valuation || !description || !file) return
+    const fundingEth = convertToEth(fundingAmount, fundingUnit)
+    const valuationEth = convertToEth(valuation, valuationUnit)
+
+    if (!address || !fundingAmount || !valuation || !description || !file || fundingEth <= 0 || valuationEth <= 0) return
 
     setIsAnalyzing(true)
     try {
@@ -84,11 +113,18 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   }
 
   const confirmOnChain = () => {
+    const fundingEth = convertToEth(fundingAmount, fundingUnit)
+    const valuationEth = convertToEth(valuation, valuationUnit)
+    const fundingEthString = formatEthString(fundingEth)
+    const valuationEthString = formatEthString(valuationEth)
+
+    if (!fundingEthString || !valuationEthString) return
+
     writeContract({
       address: VENTUREDAO_ADDRESS,
       abi: VENTUREDAO_ABI,
       functionName: 'submitProposal',
-      args: [address as `0x${string}`, parseEther(fundingAmount), parseEther(valuation), description],
+      args: [address as `0x${string}`, parseEther(fundingEthString), parseEther(valuationEthString), description],
       chainId: 11155111,
     })
   }
@@ -110,21 +146,69 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
           <form onSubmit={handleAnalyzeAndSubmit} className="space-y-6">
             <div className="grid grid-cols-2 border border-[#111]">
               <div className="p-4 border-r border-[#111]">
-                <label className="block text-[9px] font-bold text-sky-300 uppercase mb-2">Funding Goal (ETH)</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[9px] font-bold text-sky-300 uppercase">Funding Goal ({fundingUnit.toUpperCase()})</label>
+                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFundingAmount(convertDisplayUnit(fundingAmount, fundingUnit, 'usd'))
+                        setFundingUnit('usd')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${fundingUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      USD
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFundingAmount(convertDisplayUnit(fundingAmount, fundingUnit, 'eth'))
+                        setFundingUnit('eth')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${fundingUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      ETH
+                    </button>
+                  </div>
+                </div>
                 <input
                   type="number" step="0.01" min="0" required
                   value={fundingAmount} onChange={e => setFundingAmount(e.target.value)}
                   className="input-field h-10"
-                  placeholder="0.00"
+                  placeholder={fundingUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
               </div>
               <div className="p-4">
-                <label className="block text-[9px] font-bold text-sky-300 uppercase mb-2">Valuation (ETH)</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[9px] font-bold text-sky-300 uppercase">Valuation ({valuationUnit.toUpperCase()})</label>
+                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValuation(convertDisplayUnit(valuation, valuationUnit, 'usd'))
+                        setValuationUnit('usd')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      USD
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValuation(convertDisplayUnit(valuation, valuationUnit, 'eth'))
+                        setValuationUnit('eth')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      ETH
+                    </button>
+                  </div>
+                </div>
                 <input
                   type="number" step="0.01" min="0" required
                   value={valuation} onChange={e => setValuation(e.target.value)}
                   className="input-field h-10"
-                  placeholder="0.00"
+                  placeholder={valuationUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
               </div>
             </div>
@@ -180,7 +264,12 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
 
             <button
               onClick={confirmOnChain}
-              disabled={isConfirmingInWallet || isMining || Number(fundingAmount) <= 0 || Number(valuation) <= 0}
+              disabled={
+                isConfirmingInWallet ||
+                isMining ||
+                convertToEth(fundingAmount, fundingUnit) <= 0 ||
+                convertToEth(valuation, valuationUnit) <= 0
+              }
               className="btn-pro btn-pro-cyan w-full h-12"
             >
               {isConfirmingInWallet ? 'INITIALIZING WALLET HANDSHAKE...' : isMining ? 'MINING DATA TO MAINNET...' : 'EXECUTE ON-CHAIN DEPLOYMENT'}

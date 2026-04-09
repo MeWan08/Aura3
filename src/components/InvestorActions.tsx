@@ -5,11 +5,36 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { VENTUREDAO_ADDRESS, VENTUREDAO_ABI, GOVTOKEN_ADDRESS, GOVTOKEN_ABI } from '@/constants/abis'
 import { parseEther, formatEther } from 'viem'
 import { CheckCircle2, ChevronRight, Loader2 } from 'lucide-react'
+import { useEthPrice } from '@/hooks/useEthPrice'
 
 export function InvestorActions() {
   const { address } = useAccount()
+  const ethPrice = useEthPrice()
   const [depositAmount, setDepositAmount] = useState('')
+  const [depositUnit, setDepositUnit] = useState<'eth' | 'usd'>('eth')
   const [step, setStep] = useState<0 | 1 | 2>(0) // 0: input, 1: deposit mining, 2: delegate mining
+
+  const convertToEth = (raw: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(raw)
+    if (isNaN(numeric) || numeric <= 0) return 0
+    if (unit === 'eth') return numeric
+    if (!ethPrice || ethPrice <= 0) return 0
+    return numeric / ethPrice
+  }
+
+  const formatEthString = (amount: number) => {
+    if (!Number.isFinite(amount) || amount <= 0) return ''
+    return amount.toFixed(8).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1')
+  }
+
+  const convertDisplayUnit = (value: string, from: 'eth' | 'usd', to: 'eth' | 'usd') => {
+    if (from === to) return value
+    const numeric = Number(value)
+    if (isNaN(numeric) || numeric <= 0) return value
+    if (!ethPrice || ethPrice <= 0) return value
+    const converted = from === 'eth' ? numeric * ethPrice : numeric / ethPrice
+    return converted.toFixed(2)
+  }
 
   // Read Balances
   const { data: govBalance } = useReadContract({
@@ -37,12 +62,16 @@ export function InvestorActions() {
 
   const handleDeposit = () => {
     if (!depositAmount) return
+    const depositEth = convertToEth(depositAmount, depositUnit)
+    const depositEthString = formatEthString(depositEth)
+    if (!depositEthString) return
+
     setStep(1)
     writeDeposit({
       address: VENTUREDAO_ADDRESS,
       abi: VENTUREDAO_ABI,
       functionName: 'deposit',
-      value: parseEther(depositAmount),
+      value: parseEther(depositEthString),
       chainId: 11155111,
     })
   }
@@ -111,15 +140,40 @@ export function InvestorActions() {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-bold text-sky-300 uppercase tracking-widest">Deposit Unit</span>
+                <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDepositAmount(prev => convertDisplayUnit(prev, depositUnit, 'usd'))
+                      setDepositUnit('usd')
+                    }}
+                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                  >
+                    USD
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDepositAmount(prev => convertDisplayUnit(prev, depositUnit, 'eth'))
+                      setDepositUnit('eth')
+                    }}
+                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                  >
+                    ETH
+                  </button>
+                </div>
+              </div>
               <input
                 type="number" step="0.01"
                 value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
                 className="input-field h-10"
-                placeholder="0.0000000 ETH"
+                placeholder={depositUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'}
               />
               <button
                 onClick={handleDeposit}
-                disabled={!depositAmount || Number(depositAmount) <= 0}
+                disabled={!depositAmount || convertToEth(depositAmount, depositUnit) <= 0}
                 className="btn-pro btn-pro-cyan w-full h-10"
               >
                 Initialize Deposit <ChevronRight className="w-3 h-3 ml-1" />

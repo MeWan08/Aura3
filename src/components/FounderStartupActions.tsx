@@ -6,9 +6,11 @@ import { STARTUPCONTRACT_ABI } from '@/constants/abis'
 import { formatEther, parseEther } from 'viem'
 import { Loader2, Settings, Lock, Unlock, Copy, ExternalLink, ShieldCheck, Zap } from 'lucide-react'
 import { CurrencyDisplay } from '@/components/CurrencyDisplay'
+import { useEthPrice } from '@/hooks/useEthPrice'
 
 export function FounderStartupActions({ address, valuation: initialValuation }: { address: `0x${string}`, valuation: bigint }) {
   const { writeContract, isPending } = useWriteContract()
+  const ethPrice = useEthPrice()
 
   // Read state
   const { data: currentValuation } = useReadContract({
@@ -37,19 +39,45 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
 
   const [inputValuation, setInputValuation] = useState('')
   const [inputPool, setInputPool] = useState('')
+  const [valuationUnit, setValuationUnit] = useState<'eth' | 'usd'>('eth')
+  const [poolUnit, setPoolUnit] = useState<'eth' | 'usd'>('eth')
+
+  const convertToEth = (raw: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(raw)
+    if (isNaN(numeric) || numeric <= 0) return 0
+    if (unit === 'eth') return numeric
+    if (!ethPrice || ethPrice <= 0) return 0
+    return numeric / ethPrice
+  }
+
+  const formatEthString = (amount: number) => {
+    if (!Number.isFinite(amount) || amount <= 0) return ''
+    return amount.toFixed(8).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1')
+  }
+
+  const convertDisplayUnit = (value: string, from: 'eth' | 'usd', to: 'eth' | 'usd') => {
+    if (from === to) return value
+    const numeric = Number(value)
+    if (isNaN(numeric) || numeric <= 0) return value
+    if (!ethPrice || ethPrice <= 0) return value
+    const converted = from === 'eth' ? numeric * ethPrice : numeric / ethPrice
+    return converted.toFixed(2)
+  }
 
   const handleOpenExit = () => {
     if (!inputValuation || !inputPool) return
-    const val = Number(inputValuation)
-    const pool = Number(inputPool)
-    if (isNaN(val) || val <= 0 || isNaN(pool) || pool <= 0) return
+    const valEth = convertToEth(inputValuation, valuationUnit)
+    const poolEth = convertToEth(inputPool, poolUnit)
+    const valuationEthString = formatEthString(valEth)
+    const poolEthString = formatEthString(poolEth)
+    if (!valuationEthString || !poolEthString) return
 
     writeContract({
       address,
       abi: STARTUPCONTRACT_ABI,
       functionName: 'openExit',
-      args: [parseEther(inputValuation)],
-      value: parseEther(inputPool),
+      args: [parseEther(valuationEthString)],
+      value: parseEther(poolEthString),
       chainId: 11155111,
     })
   }
@@ -146,25 +174,79 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest mb-2">New Exit Valuation (ETH)</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest">New Exit Valuation ({valuationUnit.toUpperCase()})</label>
+                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInputValuation(prev => convertDisplayUnit(prev, valuationUnit, 'usd'))
+                        setValuationUnit('usd')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      USD
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInputValuation(prev => convertDisplayUnit(prev, valuationUnit, 'eth'))
+                        setValuationUnit('eth')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      ETH
+                    </button>
+                  </div>
+                </div>
                 <input 
                   type="number" step="0.0000001" min="0"
                   value={inputValuation} onChange={e => setInputValuation(e.target.value)} 
-                  className="input-field h-10 px-4" placeholder="0.0000000" 
+                  className="input-field h-10 px-4" placeholder={valuationUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
               </div>
               <div>
-                <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest mb-2">Deposit Liquidity (ETH)</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest">Deposit Liquidity ({poolUnit.toUpperCase()})</label>
+                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInputPool(prev => convertDisplayUnit(prev, poolUnit, 'usd'))
+                        setPoolUnit('usd')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      USD
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setInputPool(prev => convertDisplayUnit(prev, poolUnit, 'eth'))
+                        setPoolUnit('eth')
+                      }}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    >
+                      ETH
+                    </button>
+                  </div>
+                </div>
                 <input 
                   type="number" step="0.0000001" min="0"
                   value={inputPool} onChange={e => setInputPool(e.target.value)} 
-                  className="input-field h-10 px-4" placeholder="0.0000000" 
+                  className="input-field h-10 px-4" placeholder={poolUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
               </div>
             </div>
             <button 
               onClick={handleOpenExit} 
-              disabled={isPending || !inputValuation || !inputPool || Number(inputValuation) <= 0 || Number(inputPool) <= 0} 
+              disabled={
+                isPending ||
+                !inputValuation ||
+                !inputPool ||
+                convertToEth(inputValuation, valuationUnit) <= 0 ||
+                convertToEth(inputPool, poolUnit) <= 0
+              } 
               className="btn-pro btn-pro-cyan w-full h-10"
             >
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Initialize Exit Window'}

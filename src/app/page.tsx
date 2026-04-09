@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { NewsCards } from '@/components/NewsCards'
+import { ScrollingFeatures } from '@/components/ScrollingFeatures'
 import { useProposals } from '@/hooks/useProposals'
 import { useBalance } from 'wagmi'
 import { formatEther } from 'viem'
@@ -364,70 +365,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Technical Architecture Diagram */}
-        <section className="py-24 px-6 bg-surface-container-low relative overflow-hidden">
-          <div className="architecture-flow-bg absolute inset-0" aria-hidden="true" />
-          <div className="architecture-orb architecture-orb-left" aria-hidden="true" />
-          <div className="architecture-orb architecture-orb-right" aria-hidden="true" />
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-16 text-center">
-              <h2 className="font-headline font-black text-4xl uppercase tracking-tighter mb-4">Neural <span className="text-[#03e1ff]">Architecture</span></h2>
-              <p className="text-on-surface-variant">Synchronized interplay between on-chain security and off-chain intelligence.</p>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center relative">
-              <div className="space-y-8 relative z-10">
-                <div className="glass-panel-new p-6 border border-outline-variant/20 rounded-lg">
-                  <div className="flex items-center gap-4 mb-3">
-                    <UploadCloud className="w-6 h-6 text-[#03e1ff]" />
-                    <h4 className="font-headline font-bold uppercase text-sm tracking-widest">IPFS Storage</h4>
-                  </div>
-                  <p className="text-[10px] font-['JetBrains_Mono'] text-on-surface-variant">Decentralized document persistence. Content-addressable proofs for all proposal data.</p>
-                </div>
-                <div className="glass-panel-new p-6 border border-outline-variant/20 rounded-lg">
-                  <div className="flex items-center gap-4 mb-3">
-                    <Landmark className="w-6 h-6 text-secondary-fixed" />
-                    <h4 className="font-headline font-bold uppercase text-sm tracking-widest">Smart Treasury</h4>
-                  </div>
-                  <p className="text-[10px] font-['JetBrains_Mono'] text-on-surface-variant">ERC-20 locked liquidity. Release conditional on milestone verification strings.</p>
-                </div>
-              </div>
-              
-              <div className="flex justify-center relative py-20 lg:py-0">
-                <div className="hidden lg:block absolute left-[-50px] top-1/2 w-[100px] h-px bg-gradient-to-r from-transparent via-[#03e1ff] to-transparent"></div>
-                <div className="hidden lg:block absolute right-[-50px] top-1/2 w-[100px] h-px bg-gradient-to-r from-transparent via-[#03e1ff] to-transparent"></div>
-                <div className="w-64 h-64 rounded-full border-2 border-[#03e1ff]/30 flex items-center justify-center relative animate-[pulse_4s_infinite]">
-                  <div className="w-48 h-48 rounded-full border border-[#03e1ff]/10 flex items-center justify-center">
-                    <div className="text-center z-20">
-                      <Brain className="w-12 h-12 text-[#03e1ff] mb-2 mx-auto" />
-                      <div className="font-headline font-black text-lg tracking-widest uppercase text-white">FinScope AI</div>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 border border-[#3cffc0]/20 rounded-full animate-[spin_10s_linear_infinite]">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#3cffc0] rounded-full shadow-[0_0_10px_#3cffc0]"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-8 relative z-10">
-                <div className="glass-panel-new p-6 border border-outline-variant/20 rounded-lg">
-                  <div className="flex items-center gap-4 mb-3">
-                    <Coins className="w-6 h-6 text-tertiary" />
-                    <h4 className="font-headline font-bold uppercase text-sm tracking-widest">On-Chain Gov</h4>
-                  </div>
-                  <p className="text-[10px] font-['JetBrains_Mono'] text-on-surface-variant">Immutable voting contracts. V-DAO holders execute final investment decisions.</p>
-                </div>
-                <div className="glass-panel-new p-6 border border-outline-variant/20 rounded-lg">
-                  <div className="flex items-center gap-4 mb-3">
-                    <Terminal className="w-6 h-6 text-primary" />
-                    <h4 className="font-headline font-bold uppercase text-sm tracking-widest">Execution Layer</h4>
-                  </div>
-                  <p className="text-[10px] font-['JetBrains_Mono'] text-on-surface-variant">Automated settlement protocols. Programmatic capital deployment instantly.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ScrollingFeatures />
 
         {/* Footer */}
         <footer className="bg-surface-container-lowest border-t border-outline-variant/10 pt-20 pb-32 px-6">
