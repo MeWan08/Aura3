@@ -47,6 +47,20 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
     return converted.toFixed(2)
   }
 
+  const getConversionHint = (value: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(value)
+    if (!value || isNaN(numeric) || numeric <= 0) return ''
+    if (!ethPrice || ethPrice <= 0) return 'Live conversion unavailable'
+
+    if (unit === 'eth') {
+      const usd = numeric * ethPrice
+      return `≈ $${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`
+    }
+
+    const eth = numeric / ethPrice
+    return `≈ ${eth.toFixed(6)} ETH`
+  }
+
   const handleAnalyzeAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const fundingEth = convertToEth(fundingAmount, fundingUnit)
@@ -177,6 +191,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                   className="input-field h-10"
                   placeholder={fundingUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
+                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(fundingAmount, fundingUnit)}</p>
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
@@ -210,6 +225,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                   className="input-field h-10"
                   placeholder={valuationUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
+                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(valuation, valuationUnit)}</p>
               </div>
             </div>
             

@@ -36,6 +36,22 @@ export function InvestorActions() {
     return converted.toFixed(2)
   }
 
+  const getConversionHint = (value: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(value)
+    if (!value || isNaN(numeric) || numeric <= 0) return ''
+    if (!ethPrice || ethPrice <= 0) return 'Live conversion unavailable'
+
+    if (unit === 'eth') {
+      const usd = numeric * ethPrice
+      return `≈ $${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`
+    }
+
+    const eth = numeric / ethPrice
+    return `≈ ${eth.toFixed(6)} ETH`
+  }
+
+  const depositEthPreview = formatEthString(convertToEth(depositAmount, depositUnit))
+
   // Read Balances
   const { data: govBalance } = useReadContract({
     address: GOVTOKEN_ADDRESS,
@@ -125,7 +141,7 @@ export function InvestorActions() {
               <div className={`p-4 flex items-center justify-between bg-black ${isDepositSuccess ? 'border-l-2 border-[#00ffbd]' : ''}`}>
                 <div className="flex items-center gap-3">
                   {isDepositSuccess ? <CheckCircle2 className="w-3 h-3 text-[#00ffbd]" /> : <Loader2 className="w-3 h-3 animate-spin text-[#03e1ff]" />}
-                  <span className="text-[10px] font-bold font-mono text-white uppercase tracking-tighter">I. Credit Transfer ({depositAmount} ETH)</span>
+                  <span className="text-[10px] font-bold font-mono text-white uppercase tracking-tighter">I. Credit Transfer ({depositEthPreview || '0'} ETH)</span>
                 </div>
                 <span className="text-[9px] font-mono text-sky-300 uppercase">{isConfirmingDeposit ? 'Awaiting Sign' : isDepositSuccess ? 'Settled' : 'Mining'}</span>
               </div>
@@ -146,7 +162,7 @@ export function InvestorActions() {
                   <button
                     type="button"
                     onClick={() => {
-                      setDepositAmount(prev => convertDisplayUnit(prev, depositUnit, 'usd'))
+                      setDepositAmount(convertDisplayUnit(depositAmount, depositUnit, 'usd'))
                       setDepositUnit('usd')
                     }}
                     className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -156,7 +172,7 @@ export function InvestorActions() {
                   <button
                     type="button"
                     onClick={() => {
-                      setDepositAmount(prev => convertDisplayUnit(prev, depositUnit, 'eth'))
+                      setDepositAmount(convertDisplayUnit(depositAmount, depositUnit, 'eth'))
                       setDepositUnit('eth')
                     }}
                     className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -171,6 +187,7 @@ export function InvestorActions() {
                 className="input-field h-10"
                 placeholder={depositUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'}
               />
+              <p className="text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(depositAmount, depositUnit)}</p>
               <button
                 onClick={handleDeposit}
                 disabled={!depositAmount || convertToEth(depositAmount, depositUnit) <= 0}

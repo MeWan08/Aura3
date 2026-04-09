@@ -64,6 +64,20 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
     return converted.toFixed(2)
   }
 
+  const getConversionHint = (value: string, unit: 'eth' | 'usd') => {
+    const numeric = Number(value)
+    if (!value || isNaN(numeric) || numeric <= 0) return ''
+    if (!ethPrice || ethPrice <= 0) return 'Live conversion unavailable'
+
+    if (unit === 'eth') {
+      const usd = numeric * ethPrice
+      return `≈ $${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`
+    }
+
+    const eth = numeric / ethPrice
+    return `≈ ${eth.toFixed(6)} ETH`
+  }
+
   const handleOpenExit = () => {
     if (!inputValuation || !inputPool) return
     const valEth = convertToEth(inputValuation, valuationUnit)
@@ -180,7 +194,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                     <button
                       type="button"
                       onClick={() => {
-                        setInputValuation(prev => convertDisplayUnit(prev, valuationUnit, 'usd'))
+                        setInputValuation(convertDisplayUnit(inputValuation, valuationUnit, 'usd'))
                         setValuationUnit('usd')
                       }}
                       className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -190,7 +204,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                     <button
                       type="button"
                       onClick={() => {
-                        setInputValuation(prev => convertDisplayUnit(prev, valuationUnit, 'eth'))
+                        setInputValuation(convertDisplayUnit(inputValuation, valuationUnit, 'eth'))
                         setValuationUnit('eth')
                       }}
                       className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -204,6 +218,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                   value={inputValuation} onChange={e => setInputValuation(e.target.value)} 
                   className="input-field h-10 px-4" placeholder={valuationUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
+                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(inputValuation, valuationUnit)}</p>
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -212,7 +227,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                     <button
                       type="button"
                       onClick={() => {
-                        setInputPool(prev => convertDisplayUnit(prev, poolUnit, 'usd'))
+                        setInputPool(convertDisplayUnit(inputPool, poolUnit, 'usd'))
                         setPoolUnit('usd')
                       }}
                       className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -222,7 +237,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                     <button
                       type="button"
                       onClick={() => {
-                        setInputPool(prev => convertDisplayUnit(prev, poolUnit, 'eth'))
+                        setInputPool(convertDisplayUnit(inputPool, poolUnit, 'eth'))
                         setPoolUnit('eth')
                       }}
                       className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
@@ -236,6 +251,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                   value={inputPool} onChange={e => setInputPool(e.target.value)} 
                   className="input-field h-10 px-4" placeholder={poolUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
+                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(inputPool, poolUnit)}</p>
               </div>
             </div>
             <button 
