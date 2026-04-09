@@ -5,6 +5,27 @@ import { TrendingUp, Zap, ExternalLink } from 'lucide-react'
 
 const API_BASE = 'https://aravsaxena884-dao.hf.space'
 
+const FALLBACK_HEADLINES: NewsItem[] = [
+  {
+    article_title: 'Markets remain mixed as investors watch inflation and rate signals.',
+    source: 'AURA3 Fallback Feed',
+    article_url: 'https://finance.yahoo.com/',
+    related_symbol: 'SPY',
+  },
+  {
+    article_title: 'Bitcoin volatility rises with renewed institutional inflows.',
+    source: 'AURA3 Fallback Feed',
+    article_url: 'https://www.coindesk.com/',
+    related_symbol: 'BTC',
+  },
+  {
+    article_title: 'AI sector earnings expected to drive near-term tech sentiment.',
+    source: 'AURA3 Fallback Feed',
+    article_url: 'https://www.reuters.com/markets/',
+    related_symbol: 'NVDA',
+  },
+]
+
 interface NewsItem {
   article_title?: string
   source?: string
@@ -26,10 +47,14 @@ export function NewsTicker() {
           const data = await res.json()
           if (data.headlines && data.headlines.length > 0) {
             setHeadlines(data.headlines)
+          } else {
+            setHeadlines(FALLBACK_HEADLINES)
           }
+        } else {
+          setHeadlines(FALLBACK_HEADLINES)
         }
       } catch {
-        // Silently fail - ticker just won't show
+        setHeadlines(FALLBACK_HEADLINES)
       } finally {
         setIsLoading(false)
       }

@@ -26,6 +26,30 @@ interface NewsArticle {
   related_symbol?: string
 }
 
+const FALLBACK_NEWS: NewsArticle[] = [
+  {
+    article_title: 'Global equities pause as inflation outlook remains uncertain',
+    article_url: 'https://finance.yahoo.com/',
+    source: 'AURA3 Fallback Feed',
+    snippet: 'Macro uncertainty is keeping risk appetite selective across sectors.',
+    related_symbol: 'SPY',
+  },
+  {
+    article_title: 'Crypto liquidity improves after renewed institutional interest',
+    article_url: 'https://www.coindesk.com/',
+    source: 'AURA3 Fallback Feed',
+    snippet: 'BTC and ETH flows have picked up alongside derivatives activity.',
+    related_symbol: 'BTC',
+  },
+  {
+    article_title: 'Semiconductor leaders stay in focus ahead of earnings cycle',
+    article_url: 'https://www.reuters.com/markets/',
+    source: 'AURA3 Fallback Feed',
+    snippet: 'Investors are watching AI-related capex trends and forward guidance.',
+    related_symbol: 'NVDA',
+  },
+]
+
 export function NewsCards() {
   const [news, setNews] = useState<NewsArticle[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -38,10 +62,14 @@ export function NewsCards() {
           const data = await res.json()
           if (data.headlines && data.headlines.length > 0) {
             setNews(data.headlines.slice(0, 6))
+          } else {
+            setNews(FALLBACK_NEWS)
           }
+        } else {
+          setNews(FALLBACK_NEWS)
         }
       } catch {
-        // Silently fail
+        setNews(FALLBACK_NEWS)
       } finally {
         setIsLoading(false)
       }
