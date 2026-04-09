@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useReadContract, useWriteContract, useAccount } from 'wagmi'
 import { VENTUREDAO_ADDRESS, VENTUREDAO_ABI, STARTUPCONTRACT_ABI } from '@/constants/abis'
 import { formatEther, parseEther } from 'viem'
@@ -11,11 +11,14 @@ import Link from 'next/link'
 import { FounderStartupActions } from '@/components/FounderStartupActions'
 import { InvestorStartupActions } from '@/components/InvestorStartupActions'
 import { CurrencyDisplay } from '@/components/CurrencyDisplay'
+import { useAuth } from '@/context/AuthContext'
 
 export default function ProposalDetail() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const proposalId = typeof params.id === 'string' ? params.id : params.id?.[0]
   const { address } = useAccount()
+  const { userRole } = useAuth()
 
   const [aiReport, setAiReport] = useState<any>(null)
   const [isReportLoading, setIsReportLoading] = useState(true)
@@ -41,9 +44,13 @@ export default function ProposalDetail() {
   const { writeContract: writeVote, isPending: isVoting } = useWriteContract()
   const { writeContract: writeExecute, isPending: isExecuting } = useWriteContract()
 
-  const BACKEND_URL = 'https://aravsaxena884-dao.hf.space'
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'
   const [isDownloading, setIsDownloading] = useState(false)
   const [backendStartupId, setBackendStartupId] = useState<string | null>(null)
+  const source = searchParams.get('source')
+  const isFounderContext = source === 'founder' || userRole === 'startup'
+  const backHref = isFounderContext ? '/founder' : '/investor'
+  const backLabel = isFounderContext ? 'Return to Founder Portal' : 'Return to Stream'
 
   const [messages, setMessages] = useState<{role: 'user' | 'ai', content: string}[]>([])
   const [chatInput, setChatInput] = useState('')
@@ -110,10 +117,21 @@ export default function ProposalDetail() {
       fetch(`${BACKEND_URL}/startups`)
         .then(res => res.json())
         .then((startups: any[]) => {
-          const matched = startups.find(s => 
-            s.description === description && 
+          const byFounderAndDescription = startups.find(s =>
+            s?.description === description &&
+            typeof s?.team === 'string' &&
             s.team.toLowerCase() === founder.toLowerCase()
           )
+
+          const byFounder = startups
+            .filter(s => typeof s?.team === 'string' && s.team.toLowerCase() === founder.toLowerCase())
+            .sort((a, b) => {
+              const aTs = Date.parse(a?.updated_at || a?.created_at || 0)
+              const bTs = Date.parse(b?.updated_at || b?.created_at || 0)
+              return bTs - aTs
+            })[0]
+
+          const matched = byFounderAndDescription || byFounder
           
           if (matched) {
             setBackendStartupId(matched.startup_id)
@@ -184,9 +202,9 @@ export default function ProposalDetail() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      <Link href="/investor" className="inline-flex items-center text-[10px] font-bold font-mono text-[#444] hover:text-[#03e1ff] mb-8 uppercase tracking-widest transition-colors group">
+      <Link href={backHref} className="inline-flex items-center text-[10px] font-bold font-mono text-[#444] hover:text-[#03e1ff] mb-8 uppercase tracking-widest transition-colors group">
         <ArrowLeft className="w-3 h-3 mr-2 group-hover:-translate-x-1 transition-transform" /> 
-        Return to Stream
+        {backLabel}
       </Link>
       
       <div className="border border-[#111] bg-black mb-10">
@@ -291,7 +309,7 @@ export default function ProposalDetail() {
             <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-wide">AI Venture Analysis</h2>
             <p className="text-[10px] font-bold font-mono text-[#00ffbd] uppercase tracking-widest">Generative Intelligence Report</p>
           </div>
-          {aiReport && (
+          {backendStartupId && (
             <button 
               onClick={handleDownloadPDF}
               disabled={isDownloading}
@@ -363,6 +381,7 @@ export default function ProposalDetail() {
                 <div>
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider leading-none">Venture Analyst</h3>
                   <p className="text-[8px] font-bold font-mono text-[#00ffbd] uppercase tracking-widest mt-1">Live AI Data Stream</p>
+                  <p className="text-[8px] font-bold font-mono text-[#03e1ff] uppercase tracking-widest mt-1">Startup: {proposal.description}</p>
                 </div>
               </div>
               <button onClick={() => setIsChatOpen(false)} className="text-[#444] hover:text-[#03e1ff] transition-colors">

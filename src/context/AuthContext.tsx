@@ -25,7 +25,7 @@ const normalizeRole = (role: string | null | undefined): UserRole | null => {
 
 export const getDashboardPath = (role: UserRole | null) => {
   if (role === 'investor') return '/investor';
-  if (role === 'startup') return '/startup';
+  if (role === 'startup') return '/founder';
   return '/';
 };
 

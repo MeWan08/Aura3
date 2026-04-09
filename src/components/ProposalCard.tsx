@@ -8,7 +8,15 @@ import { CurrencyDisplay } from '@/components/CurrencyDisplay'
 import { formatEther } from 'viem'
 import React from 'react'
 
-export function ProposalCard({ proposal, itemVars }: { proposal: any, itemVars: Variants }) {
+export function ProposalCard({
+  proposal,
+  itemVars,
+  source,
+}: {
+  proposal: any
+  itemVars: Variants
+  source?: 'founder' | 'investor' | 'startup'
+}) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   
@@ -59,6 +67,7 @@ export function ProposalCard({ proposal, itemVars }: { proposal: any, itemVars: 
   const againstVotesNum = Number(formatEther(proposal.againstVotes))
   const totalVotes = forVotesNum + againstVotesNum
   const forPercent = totalVotes > 0 ? (forVotesNum / totalVotes) * 100 : 0
+  const accessNodeHref = source ? `/proposal/${proposal.id}?source=${source}` : `/proposal/${proposal.id}`
 
   return (
     <motion.div
@@ -112,7 +121,7 @@ export function ProposalCard({ proposal, itemVars }: { proposal: any, itemVars: 
 
         <div className="shrink-0 ml-auto flex items-center relative z-20" style={{ transform: "translateZ(50px)" }}>
           <Link
-            href={`/proposal/${proposal.id}`}
+            href={accessNodeHref}
             className="flex items-center justify-center px-6 py-3 rounded-sm border border-white/20 group-hover:border-[#03e1ff]/80 transition-all bg-black/80 hover:bg-[#03e1ff]/10 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_20px_rgba(3,225,255,0.4)] overflow-hidden relative"
           >
             <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-[linear-gradient(45deg,transparent_25%,rgba(3,225,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[bg-shift_2s_linear_infinite]" />

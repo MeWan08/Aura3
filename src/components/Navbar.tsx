@@ -31,15 +31,15 @@ export function Navbar() {
                 AURA3
               </span>
             </Link>
-            <div className="hidden md:flex items-center h-full">
+            <div className="flex items-center h-full">
               {currentUser && userRole === 'investor' && (
                 <Link href="/investor" className="flex items-center px-6 h-full border-r border-[#111] text-[10px] font-bold font-mono text-sky-200 hover:text-[#03e1ff] uppercase tracking-wider transition-colors">
                   Investor Dash
                 </Link>
               )}
               {currentUser && userRole === 'startup' && (
-                <Link href="/startup" className="flex items-center px-6 h-full border-r border-[#111] text-[10px] font-bold font-mono text-sky-200 hover:text-[#03e1ff] uppercase tracking-wider transition-colors">
-                  Startup Portal
+                <Link href="/founder" className="flex items-center px-6 h-full border-r border-[#111] text-[10px] font-bold font-mono text-sky-200 hover:text-[#03e1ff] uppercase tracking-wider transition-colors">
+                  Founder Portal
                 </Link>
               )}
               <Link href="/portfolio" className="flex items-center px-6 h-full border-r border-[#111] text-[10px] font-bold font-mono text-sky-200 hover:text-[#00ffbd] uppercase tracking-wider transition-colors">

@@ -84,7 +84,7 @@ export default function FounderDashboard() {
                   </h2>
                </div>
                <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
-                  <ProposalList filterFounder={address} />
+                <ProposalList filterFounder={address} source="founder" />
                </div>
             </div>
           </div>

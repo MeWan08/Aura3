@@ -19,7 +19,13 @@ const itemVars: Variants = {
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
 }
 
-export function ProposalList({ filterFounder }: { filterFounder?: `0x${string}` }) {
+export function ProposalList({
+  filterFounder,
+  source,
+}: {
+  filterFounder?: `0x${string}`
+  source?: 'founder' | 'investor' | 'startup'
+}) {
   const { proposals, isLoading } = useProposals()
 
   if (isLoading) {
@@ -47,7 +53,7 @@ export function ProposalList({ filterFounder }: { filterFounder?: `0x${string}` 
   return (
     <motion.div variants={containerVars} initial="hidden" animate="show" className="flex flex-col gap-2 max-w-5xl mx-auto w-full">
       {filtered.map((proposal) => (
-        <ProposalCard key={proposal.id} proposal={proposal} itemVars={itemVars} />
+        <ProposalCard key={proposal.id} proposal={proposal} itemVars={itemVars} source={source} />
       ))}
     </motion.div>
   )
