@@ -253,10 +253,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Global News Cards */}
+        {/* Global News Cards
         <section className="px-6 relative z-20">
           <NewsCards />
-        </section>
+        </section> */}
 
         {/* Why AURA-3 */}
         <section className="py-24 px-6 relative bg-surface-container-lowest overflow-hidden">
