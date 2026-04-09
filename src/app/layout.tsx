@@ -12,6 +12,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'AURA3 Platform',
   description: 'Decentralized Capital Intelligence Protocol',
+  icons: {
+    icon: '/vercel.png',
+    shortcut: '/vercel.png',
+    apple: '/vercel.png',
+  },
 }
 
 export default function RootLayout({

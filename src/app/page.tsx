@@ -309,8 +309,15 @@ export default function LandingPage() {
         </section>
 
         {/* Journey of a Proposal */}
-        <section className="py-24 px-6 overflow-hidden">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-24 px-6 overflow-hidden relative bg-[#06090d] border-y border-[#03e1ff]/10">
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(3,225,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(3,225,255,0.04)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
+            <div className="absolute -top-24 -left-24 w-[480px] h-[480px] rounded-full bg-[#03e1ff]/20 blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" />
+            <div className="absolute -bottom-28 -right-24 w-[500px] h-[500px] rounded-full bg-[#00ffbd]/18 blur-[130px] animate-[pulse_10s_ease-in-out_infinite]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(3,225,255,0.16),transparent_36%),radial-gradient(circle_at_80%_65%,rgba(0,255,189,0.12),transparent_34%)]" />
+          </div>
+
+          <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-20">
               <h2 className="font-headline font-black text-5xl md:text-6xl uppercase tracking-tighter mb-4 glitch-text-new">The Journey of a <span className="text-primary">Proposal</span></h2>
               <p className="text-on-surface-variant max-w-2xl mx-auto">From a single vision to a fully funded decentralized project. Simple, transparent, autonomous.</p>
