@@ -89,7 +89,7 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container">
       
       {/* SideNavBar (System Status) */}
-      <aside className="hidden lg:flex flex-col items-center py-8 gap-8 fixed left-0 top-0 h-full z-40 w-20 border-r border-[#03e1ff]/10 bg-[#0e0e0e]" style={{ paddingTop: '80px' }}>
+      <aside className="hidden lg:flex flex-col items-center py-8 gap-8 fixed left-0 top-0 h-full z-40 w-20 border-r border-[#03e1ff]/10 bg-white" style={{ paddingTop: '80px' }}>
         <div className="flex flex-col items-center gap-2 mb-10">
           <div className="w-10 h-10 rounded-full border border-secondary-fixed flex items-center justify-center bg-secondary-fixed/10">
             <Brain className="w-5 h-5 text-secondary-fixed" />
@@ -117,21 +117,10 @@ export default function LandingPage() {
         </div>
       </aside>
 
-      <main className="lg:ml-20 flex-1 terminal-grid deep-space-bg relative z-10 w-full overflow-hidden">
+      <main className="lg:ml-20 flex-1 relative z-10 w-full overflow-hidden bg-white">
         {/* Hero Section */}
         <section className="relative px-6 overflow-hidden min-h-[calc(100svh-64px)] flex items-center py-20 mb-[-1px]">
-          <img
-            src={heroBackdropImage}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/70 to-black/95" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(3,225,255,0.2),transparent_35%),radial-gradient(circle_at_78%_34%,rgba(60,255,192,0.16),transparent_34%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-sky-50 via-white to-white" />
 
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center relative z-10">
             <div className="lg:col-span-7 z-10">
@@ -276,7 +265,7 @@ export default function LandingPage() {
         </section>
 
         {/* Problem Section: The Centralization Gap */}
-        <section className="py-24 px-6 bg-[#0e0e0e] border-y border-outline-variant/10 relative">
+        <section className="py-24 px-6 bg-white border-y border-outline-variant/10 relative">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div>
@@ -309,7 +298,7 @@ export default function LandingPage() {
         </section>
 
         {/* Journey of a Proposal */}
-        <section className="py-24 px-6 overflow-hidden relative bg-[#06090d] border-y border-[#03e1ff]/10">
+        <section className="py-24 px-6 overflow-hidden relative bg-white border-y border-[#03e1ff]/10">
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
             <div className="absolute inset-0 bg-[linear-gradient(rgba(3,225,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(3,225,255,0.04)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
             <div className="absolute -top-24 -left-24 w-[480px] h-[480px] rounded-full bg-[#03e1ff]/20 blur-[120px] animate-[pulse_8s_ease-in-out_infinite]" />
@@ -348,7 +337,7 @@ export default function LandingPage() {
                         }}
                         className="w-full h-full object-cover opacity-60 saturate-75 group-hover:scale-105 group-hover:opacity-85 group-hover:saturate-100 transition-all duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/15" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/25 to-transparent" />
                       <div className="absolute top-4 left-4 px-2.5 py-1 border border-[#03e1ff]/35 bg-black/60 backdrop-blur-md text-[10px] font-['JetBrains_Mono'] font-bold tracking-[0.2em] text-[#7cf2ff]">
                         STEP {step.id}
                       </div>

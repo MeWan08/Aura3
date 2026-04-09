@@ -8,11 +8,11 @@
   --color-tertiary-fixed-dim: #ddb7ff;
   --color-on-primary-fixed: #001f25;
   --color-on-primary: #00363e;
-  --color-on-background: #e2e2e2;
+  --color-on-background: #0f172a;
   --color-on-primary-fixed-variant: #004e5a;
   --color-surface-bright: #393939;
   --color-tertiary: #f5e3ff;
-  --color-on-surface: #e2e2e2;
+  --color-on-surface: #0f172a;
   --color-error: #ffb4ab;
   --color-on-tertiary-fixed: #2c0051;
   --color-primary-fixed: #a3eeff;
@@ -27,23 +27,23 @@
   --color-primary-container: #03e1ff;
   --color-on-tertiary-fixed-variant: #6900b3;
   --color-on-error: #690005;
-  --color-surface-container: #1f1f1f;
+  --color-surface-container: #ffffff;
   --color-secondary: #ffffff;
-  --color-surface-container-highest: #353535;
-  --color-background: #131313;
+  --color-surface-container-highest: #ffffff;
+  --color-background: #ffffff;
   --color-on-primary-container: #00606e;
   --color-on-error-container: #ffdad6;
   --color-on-secondary-container: #007353;
   --color-secondary-fixed: #3cffc0;
-  --color-surface-container-high: #2a2a2a;
-  --color-surface-container-lowest: #0e0e0e;
-  --color-on-surface-variant: #bac9cd;
+  --color-surface-container-high: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface-variant: #334155;
   --color-inverse-on-surface: #303030;
-  --color-surface-container-low: #1b1b1b;
-  --color-surface-variant: #353535;
+  --color-surface-container-low: #ffffff;
+  --color-surface-variant: #e2e8f0;
   --color-secondary-container: #3cffc0;
   --color-on-secondary-fixed: #002115;
-  --color-surface: #131313;
+  --color-surface: #ffffff;
   --color-inverse-surface: #e2e2e2;
   --color-primary: #bcf2ff;
   --color-on-secondary-fixed-variant: #00513a;
@@ -149,10 +149,43 @@ body {
   background-image: none !important;
 }
 
+[class*="bg-gradient-to"],
+[class*="from-black"],
+[class*="via-black"],
+[class*="to-black"],
+.deep-space-bg,
+.terminal-grid,
+.hero-aurora-bg,
+.hero-grid-shift {
+  background-image: none !important;
+}
+
 [class*="text-white"],
 [class*="text-gray-"],
 [class*="text-on-surface"] {
   color: #000000 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #0f172a !important;
+}
+
+[class*="uppercase"][class*="font-bold"],
+[class*="uppercase"][class*="font-black"] {
+  color: #0284c7 !important;
+}
+
+[class*="border-white"],
+[class*="border-[#111"],
+[class*="border-[#222"],
+[class*="border-[#333"],
+[class*="border-outline"] {
+  border-color: #cbd5e1 !important;
 }
 
 input,
