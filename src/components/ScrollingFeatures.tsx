@@ -90,7 +90,7 @@ export function ScrollingFeatures() {
             <Image src="/vercel.png" alt="AURA3 Icon" width={14} height={14} className="rounded-sm" />
             <span className="text-[11px] font-mono text-[#0284c7] uppercase tracking-[0.18em]">AURA3 Architecture Stream</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-headline font-black uppercase tracking-tight text-slate-900 mb-4 drop-shadow-[0_2px_10px_rgba(2,132,199,0.15)]">
+          <h2 className="text-4xl md:text-5xl font-body font-black uppercase tracking-tight text-slate-900 mb-4 drop-shadow-[0_2px_10px_rgba(2,132,199,0.15)]">
             Neural Feature Matrix
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
@@ -123,7 +123,7 @@ export function ScrollingFeatures() {
                       {`Layer ${index + 1}`}
                     </span>
                   </div>
-                  <h3 className="text-3xl font-headline font-black text-slate-900 mb-4 uppercase tracking-tight">{feature.title}</h3>
+                  <h3 className="text-3xl font-body font-black text-slate-900 mb-4 uppercase tracking-tight">{feature.title}</h3>
                   <p className="text-slate-600 text-lg leading-relaxed mb-6">{feature.description}</p>
                 </div>
 

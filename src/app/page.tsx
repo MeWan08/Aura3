@@ -130,8 +130,8 @@ export default function LandingPage() {
                   <span className="font-['JetBrains_Mono'] text-[10px] text-[#0f8a66] uppercase tracking-[0.2em]">Protocol Active: V3.0.4-BETA</span>
                 </div>
 
-                <h1 className="font-headline font-black text-6xl md:text-8xl tracking-tighter mb-7 glitch-text-new uppercase leading-[0.92]">
-                  <span className="text-slate-900">AURA</span><span className="text-[#03e1ff]">3</span>
+                <h1 className="font-body font-black text-6xl md:text-8xl tracking-tighter mb-7 glitch-text-new uppercase leading-[0.92]">
+                  <span className="text-slate-900">AURA</span><span className="text-[#0284c7]">3</span>
                 </h1>
 
                 <p className="text-on-surface-variant text-xl max-w-2xl mb-8 leading-relaxed font-light">
@@ -145,14 +145,14 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-4">
-                  <button onClick={() => handleRoleNavigation('investor')} className="bg-primary-container text-on-primary-container px-6 py-4 font-headline font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-[0_0_30px_rgba(3,225,255,0.3)]">
+                  <button onClick={() => handleRoleNavigation('investor')} className="bg-[#0284c7] text-white px-6 py-4 font-body font-bold uppercase tracking-widest hover:scale-105 transition-all shadow-[0_4px_20px_rgba(2,132,199,0.2)]">
                     Investor Nexus
                   </button>
-                  <button onClick={() => handleRoleNavigation('startup')} className="bg-surface-container border border-primary/20 text-primary px-6 py-4 font-headline font-bold uppercase tracking-widest hover:bg-primary/5 transition-all">
+                  <button onClick={() => handleRoleNavigation('startup')} className="bg-white border border-slate-200 text-slate-800 px-6 py-4 font-body font-bold uppercase tracking-widest hover:bg-slate-50 transition-all">
                     Startup Forge
                   </button>
                   {currentUser && userRole === 'investor' && (
-                    <Link href="/finscope" className="bg-surface-container border border-tertiary-fixed-dim/40 text-tertiary px-6 py-4 font-headline font-bold uppercase tracking-widest hover:bg-tertiary-fixed-dim/10 transition-all">
+                    <Link href="/finscope" className="bg-slate-50 border border-slate-200 text-[#0284c7] px-6 py-4 font-body font-bold uppercase tracking-widest hover:bg-slate-100 transition-all">
                       FinScope AI
                     </Link>
                   )}
@@ -225,17 +225,17 @@ export default function LandingPage() {
                 transition={{ delay: 0.35, duration: 0.55 }}
                 className="max-w-md mx-auto mt-4 grid grid-cols-3 gap-3"
               >
-                <div className="border border-white/10 bg-black/45 backdrop-blur-sm rounded p-3">
-                  <p className="text-[9px] uppercase tracking-widest text-gray-500 font-['JetBrains_Mono']">Settlement</p>
-                  <p className="text-sm font-bold text-[#9cf5ff] mt-1">Instant</p>
+                <div className="glass-card p-4 rounded-xl shadow-sm border border-slate-200/50">
+                  <p className="text-[9px] uppercase tracking-widest text-[#0284c7] font-bold font-body">Settlement</p>
+                  <p className="text-sm font-black text-slate-900 mt-1 uppercase">Instant</p>
                 </div>
-                <div className="border border-white/10 bg-black/45 backdrop-blur-sm rounded p-3">
-                  <p className="text-[9px] uppercase tracking-widest text-gray-500 font-['JetBrains_Mono']">Due Diligence</p>
-                  <p className="text-sm font-bold text-[#9cf5ff] mt-1">AI Native</p>
+                <div className="glass-card p-4 rounded-xl shadow-sm border border-slate-200/50">
+                  <p className="text-[9px] uppercase tracking-widest text-[#0284c7] font-bold font-body">Due Diligence</p>
+                  <p className="text-sm font-black text-slate-900 mt-1 uppercase">AI Native</p>
                 </div>
-                <div className="border border-white/10 bg-black/45 backdrop-blur-sm rounded p-3">
-                  <p className="text-[9px] uppercase tracking-widest text-gray-500 font-['JetBrains_Mono']">Governance</p>
-                  <p className="text-sm font-bold text-[#9cf5ff] mt-1">On-chain</p>
+                <div className="glass-card p-4 rounded-xl shadow-sm border border-slate-200/50">
+                  <p className="text-[9px] uppercase tracking-widest text-[#0284c7] font-bold font-body">Governance</p>
+                  <p className="text-sm font-black text-slate-900 mt-1 uppercase">On-chain</p>
                 </div>
               </motion.div>
             </div>
@@ -250,8 +250,8 @@ export default function LandingPage() {
         {/* Why AURA-3 */}
         <section className="py-24 px-6 relative bg-surface-container-lowest overflow-hidden">
           <div className="max-w-4xl mx-auto relative z-10">
-            <div className="inline-block px-3 py-1 border border-[#03e1ff]/30 text-[#03e1ff] font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest mb-8">Mission Briefing</div>
-            <h2 className="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter mb-8 leading-tight">Addressing the <span className="text-secondary-fixed">Systemic Gaps</span> in Venture Capital</h2>
+            <div className="inline-block px-3 py-1 border border-[#0284c7]/30 text-[#0284c7] font-mono text-[10px] uppercase tracking-widest mb-8">Mission Briefing</div>
+            <h2 className="font-body font-black text-4xl md:text-5xl uppercase tracking-tighter mb-8 leading-tight">Addressing the <span className="text-secondary-fixed">Systemic Gaps</span> in Venture Capital</h2>
             <div className="space-y-6 text-on-surface-variant text-lg font-light leading-relaxed">
               <p>Centralized Venture Capital ecosystems have long struggled with structural inefficiencies: opaque investment criteria, restricted access for retail participants, and decision-making processes that concentrate power within small, homogeneous networks.</p>
               <p>These shortcomings disproportionately affect founders from underrepresented communities, whose funding prospects are shaped more by personal connections than by the merit of their ventures.</p>
@@ -269,7 +269,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div>
-                <h2 className="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter mb-4">The <span className="text-error">Centralization</span> Gap</h2>
+                <h2 className="font-body font-black text-4xl md:text-5xl uppercase tracking-tighter mb-4">The <span className="text-rose-500">Centralization</span> Gap</h2>
                 <p className="text-on-surface-variant max-w-xl">Traditional venture capital is a black box. Opaque criteria, restricted access, and archaic manual processing stifle global innovation.</p>
               </div>
               <div className="font-['JetBrains_Mono'] text-[10px] text-error uppercase border border-error/20 px-4 py-2 flex items-center gap-2">
@@ -279,18 +279,18 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
               <div className="p-10 bg-surface-container border-b md:border-b-0 md:border-r border-outline-variant/5">
-                <Lock className="w-8 h-8 text-error/60 mb-6" />
-                <h4 className="font-headline font-bold text-xl uppercase mb-4">Gated Access</h4>
+                <Lock className="w-8 h-8 text-rose-500/60 mb-6" />
+                <h4 className="font-body font-bold text-xl uppercase mb-4">Gated Access</h4>
                 <p className="text-on-surface-variant text-sm leading-relaxed">Only 0.1% of global investors have access to tier-1 venture opportunities, creating an artificial scarcity of capital flows.</p>
               </div>
               <div className="p-10 bg-surface-container border-b md:border-b-0 md:border-r border-outline-variant/5">
-                <EyeOff className="w-8 h-8 text-error/60 mb-6" />
-                <h4 className="font-headline font-bold text-xl uppercase mb-4">Opaque Logic</h4>
+                <EyeOff className="w-8 h-8 text-rose-500/60 mb-6" />
+                <h4 className="font-body font-bold text-xl uppercase mb-4">Opaque Logic</h4>
                 <p className="text-on-surface-variant text-sm leading-relaxed">Investment decisions are made behind closed doors with no verifiable data trail or objective performance metrics.</p>
               </div>
               <div className="p-10 bg-surface-container">
-                <Timer className="w-8 h-8 text-error/60 mb-6" />
-                <h4 className="font-headline font-bold text-xl uppercase mb-4">Latency Issues</h4>
+                <Timer className="w-8 h-8 text-rose-500/60 mb-6" />
+                <h4 className="font-body font-bold text-xl uppercase mb-4">Latency Issues</h4>
                 <p className="text-on-surface-variant text-sm leading-relaxed">Settlement and due diligence take months, not seconds. Capital is trapped in legal and bureaucratic friction.</p>
               </div>
             </div>
@@ -308,7 +308,7 @@ export default function LandingPage() {
 
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-20">
-              <h2 className="font-headline font-black text-5xl md:text-6xl uppercase tracking-tighter mb-4 glitch-text-new">The Journey of a <span className="text-primary">Proposal</span></h2>
+              <h2 className="font-body font-black text-5xl md:text-6xl uppercase tracking-tighter mb-4 glitch-text-new">The Journey of a <span className="text-[#0284c7]">Proposal</span></h2>
               <p className="text-on-surface-variant max-w-2xl mx-auto">From a single vision to a fully funded decentralized project. Simple, transparent, autonomous.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -347,7 +347,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className="p-5 text-center">
-                      <h4 className="font-headline font-black text-xl uppercase tracking-wide mb-2 text-slate-900 group-hover:text-[#0284c7] transition-colors">
+                      <h4 className="font-body font-black text-xl uppercase tracking-wide mb-2 text-slate-900 group-hover:text-[#0284c7] transition-colors">
                         {step.title}
                       </h4>
                       <p className="text-on-surface-variant text-sm font-light leading-relaxed">
@@ -382,30 +382,30 @@ export default function LandingPage() {
                 </div>
               </div>
               <div>
-                <h5 className="font-headline font-bold uppercase text-xs tracking-widest text-[#03e1ff] mb-6">Protocol</h5>
+                <h5 className="font-body font-bold uppercase text-xs tracking-widest text-[#0284c7] mb-6">Protocol</h5>
                 <ul className="space-y-4 text-on-surface-variant text-sm">
-                  <li><a className="hover:text-primary transition-all" href="#">Treasury</a></li>
-                  <li><a className="hover:text-primary transition-all" href="#">Node Network</a></li>
-                  <li><a className="hover:text-primary transition-all" href="#">Yield Model</a></li>
-                  <li><a className="hover:text-primary transition-all" href="#">Analytics</a></li>
+                  <li><a className="hover:text-[#0284c7] transition-all" href="#">Treasury</a></li>
+                  <li><a className="hover:text-[#0284c7] transition-all" href="#">Node Network</a></li>
+                  <li><a className="hover:text-[#0284c7] transition-all" href="#">Yield Model</a></li>
+                  <li><a className="hover:text-[#0284c7] transition-all" href="#">Analytics</a></li>
                 </ul>
               </div>
               <div>
-                <h5 className="font-headline font-bold uppercase text-xs tracking-widest text-secondary-fixed mb-6">Governance</h5>
+                <h5 className="font-body font-bold uppercase text-xs tracking-widest text-emerald-500 mb-6">Governance</h5>
                 <ul className="space-y-4 text-on-surface-variant text-sm">
-                  <li><a className="hover:text-secondary-fixed transition-all" href="#">V-Token</a></li>
-                  <li><a className="hover:text-secondary-fixed transition-all" href="#">DAO Portal</a></li>
-                  <li><a className="hover:text-secondary-fixed transition-all" href="#">Voter Staking</a></li>
-                  <li><a className="hover:text-secondary-fixed transition-all" href="#">Proposals</a></li>
+                  <li><a className="hover:text-emerald-500 transition-all" href="#">V-Token</a></li>
+                  <li><a className="hover:text-emerald-500 transition-all" href="#">DAO Portal</a></li>
+                  <li><a className="hover:text-emerald-500 transition-all" href="#">Voter Staking</a></li>
+                  <li><a className="hover:text-emerald-500 transition-all" href="#">Proposals</a></li>
                 </ul>
               </div>
               <div>
-                <h5 className="font-headline font-bold uppercase text-xs tracking-widest text-tertiary mb-6">Resources</h5>
+                <h5 className="font-body font-bold uppercase text-xs tracking-widest text-purple-500 mb-6">Resources</h5>
                 <ul className="space-y-4 text-on-surface-variant text-sm">
-                  <li><a className="hover:text-tertiary transition-all" href="#">Whitepaper</a></li>
-                  <li><a className="hover:text-tertiary transition-all" href="#">Documentation</a></li>
-                  <li><a className="hover:text-tertiary transition-all" href="#">API Access</a></li>
-                  <li><a className="hover:text-tertiary transition-all" href="#">Media Kit</a></li>
+                  <li><a className="hover:text-purple-500 transition-all" href="#">Whitepaper</a></li>
+                  <li><a className="hover:text-purple-500 transition-all" href="#">Documentation</a></li>
+                  <li><a className="hover:text-purple-500 transition-all" href="#">API Access</a></li>
+                  <li><a className="hover:text-purple-500 transition-all" href="#">Media Kit</a></li>
                 </ul>
               </div>
             </div>
