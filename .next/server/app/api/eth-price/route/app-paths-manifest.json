@@ -1,0 +1,3 @@
+{
+  "/api/eth-price/route": "app/api/eth-price/route.js"
+}

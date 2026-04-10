@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/finscope/layout,_N_T_/finscope/page,_N_T_/finscope"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/finscope/__PAGE__",
+    "/finscope",
+    "/_index",
+    "/_head"
+  ]
+}

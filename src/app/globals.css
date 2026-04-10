@@ -64,7 +64,8 @@
   }
   .glass-panel-new {
     backdrop-filter: blur(24px);
-    background: rgba(31, 31, 31, 0.6);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
   .terminal-grid {
     background-image: radial-gradient(rgba(3, 225, 255, 0.05) 1px, transparent 1px);
@@ -85,9 +86,9 @@
     background-size: 24px 24px;
   }
   .glass-card {
-    background: linear-gradient(135deg, rgba(31, 31, 31, 0.6) 0%, rgba(14, 14, 14, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.9) 100%);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(188, 242, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
   }
   .hero-clip {
     clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
@@ -135,58 +136,7 @@ body {
   color: #000000 !important;
 }
 
-/* Global readability overrides for pages with hardcoded dark utilities */
-[class*="bg-black"],
-[class*="bg-[#0"],
-[class*="bg-[#1"],
-[class*="bg-[#2"],
-[class*="bg-[#3"],
-[class*="bg-gray-9"],
-[class*="bg-zinc-9"],
-[class*="bg-neutral-9"],
-[class*="bg-surface"] {
-  background-color: #ffffff !important;
-  background-image: none !important;
-}
 
-[class*="bg-gradient-to"],
-[class*="from-black"],
-[class*="via-black"],
-[class*="to-black"],
-.deep-space-bg,
-.terminal-grid,
-.hero-aurora-bg,
-.hero-grid-shift {
-  background-image: none !important;
-}
-
-[class*="text-white"],
-[class*="text-gray-"],
-[class*="text-on-surface"] {
-  color: #000000 !important;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #0f172a !important;
-}
-
-[class*="uppercase"][class*="font-bold"],
-[class*="uppercase"][class*="font-black"] {
-  color: #0284c7 !important;
-}
-
-[class*="border-white"],
-[class*="border-[#111"],
-[class*="border-[#222"],
-[class*="border-[#333"],
-[class*="border-outline"] {
-  border-color: #cbd5e1 !important;
-}
 
 input,
 textarea,

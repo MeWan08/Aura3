@@ -181,12 +181,12 @@ function extractNewsCard(content: string) {
 function AgentBadge({ agent }: { agent?: string }) {
   if (!agent) return null
   const colorMap: Record<string, string> = {
-    'Financial Educator': 'border-emerald-500/30 text-emerald-400',
-    'Document Analyzer': 'border-amber-500/30 text-amber-400',
-    'Market Researcher': 'border-blue-500/30 text-blue-400',
-    'Portfolio Coach': 'border-purple-500/30 text-purple-400',
+    'Financial Educator': 'border-emerald-200 text-emerald-700 bg-emerald-50',
+    'Document Analyzer': 'border-amber-200 text-amber-700 bg-amber-50',
+    'Market Researcher': 'border-blue-200 text-blue-700 bg-blue-50',
+    'Portfolio Coach': 'border-purple-200 text-purple-700 bg-purple-50',
   }
-  const style = colorMap[agent] || 'border-gray-500/30 text-gray-400'
+  const style = colorMap[agent] || 'border-slate-200 text-slate-600 bg-slate-50'
   return (
     <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-bold font-mono uppercase tracking-wider rounded-sm border bg-white/[0.02] ${style}`}>
       <Brain className="w-2.5 h-2.5" />
@@ -242,7 +242,7 @@ function StartupFlashCard({ flashcard }: { flashcard: any }) {
         </div>
         
         <div className="absolute bottom-10 left-6">
-          <h3 className="font-headline font-black text-3xl text-secondary tracking-tight">{flashcard.title || 'Startup'}</h3>
+          <h3 className="font-body font-black text-3xl text-secondary tracking-tight">{flashcard.title || 'Startup'}</h3>
           <span className="text-[10px] font-mono text-primary-container/80 uppercase tracking-widest">
             {flashcard.whatItDoes && flashcard.whatItDoes !== 'Not specified' ? flashcard.whatItDoes.slice(0, 30) + '...' : 'Series Selection'}
           </span>
@@ -291,7 +291,7 @@ function StartupFlashCard({ flashcard }: { flashcard: any }) {
             </div>
             <div className="flex flex-col">
               <span className="text-[8px] font-mono text-on-surface-variant uppercase">Confidence</span>
-              <span className="text-[10px] font-headline font-black text-primary-container tracking-tighter">MAXIMUM_TRUST</span>
+              <span className="text-[10px] font-body font-black text-primary-container tracking-tighter">MAXIMUM_TRUST</span>
             </div>
           </div>
           <button className="w-10 h-10 flex items-center justify-center border border-primary-container/20 rounded-full hover:bg-primary-container/10 transition-colors text-primary-container">
@@ -446,7 +446,7 @@ function CompetitorChartCard({ data }: { data: any }) {
         <div className="flex justify-between items-start">
           <div className="flex flex-col">
             <span className="font-['JetBrains_Mono'] text-[9px] text-secondary-fixed tracking-[3px] uppercase">Competitor_Landscape_v2</span>
-            <h3 className="font-headline font-black text-xl text-secondary mt-1">{company} vs Market Benchmarks</h3>
+            <h3 className="font-body font-black text-xl text-secondary mt-1">{company} vs Market Benchmarks</h3>
           </div>
           <div className="p-2 bg-secondary-fixed/10 border border-secondary-fixed/20 rounded-sm">
             <LineChart className="text-secondary-fixed w-4 h-4" />
@@ -529,7 +529,7 @@ function ChatNewsCard({ data }: { data: any }) {
             href={item.url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            <div className="group flex gap-3 p-3 bg-white border border-slate-200 hover:border-[#0284c7]/30 rounded-sm transition-all duration-300 shadow-sm"
+            className="group flex gap-3 p-3 bg-white border border-slate-200 hover:border-[#0284c7]/30 rounded-sm transition-all duration-300 shadow-sm"
           >
             {item.photo && (
               <div className="w-20 h-20 shrink-0 bg-slate-100 overflow-hidden rounded-sm hidden sm:block border border-slate-100 group-hover:border-[#0284c7]/20 transition-colors">
@@ -576,10 +576,10 @@ function ChatNewsCard({ data }: { data: any }) {
                   </>
                 )}
               </div>
-              <h4 className="text-[12px] font-medium text-gray-300 group-hover:text-[#03e1ff] line-clamp-2 mb-1.5 leading-snug transition-colors">
+              <h4 className="text-[12px] font-semibold text-slate-800 group-hover:text-[#0284c7] line-clamp-2 mb-1.5 leading-snug transition-colors">
                 {item.title}
               </h4>
-              <p className="text-[10px] text-gray-500 line-clamp-2 leading-relaxed">
+              <p className="text-[10px] text-slate-600 line-clamp-2 leading-relaxed">
                 {item.snippet}
               </p>
             </div>
@@ -643,7 +643,7 @@ function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
             value={goal} 
             onChange={e => setGoal(e.target.value)} 
             placeholder="e.g. Retirement, House Downpayment..." 
-            className="w-full bg-black/60 border border-white/10 rounded-lg px-3.5 py-2.5 text-[12px] text-white focus:outline-none focus:border-emerald-500/50 transition-colors" 
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5 text-[12px] text-slate-900 focus:outline-none focus:border-[#0284c7]/50 transition-colors" 
           />
         </div>
 
@@ -976,7 +976,7 @@ export default function FinScopePage() {
       <aside className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
         <div className="p-4 flex flex-col h-full mt-20">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-slate-900 font-headline tracking-widest uppercase text-sm font-bold">Past Data Links</h2>
+            <h2 className="text-slate-900 font-body tracking-widest uppercase text-sm font-bold">Past Data Links</h2>
             <button onClick={() => setSidebarOpen(false)} className="text-slate-500 hover:text-slate-900">
               <X className="w-5 h-5" />
             </button>
@@ -1010,7 +1010,7 @@ export default function FinScopePage() {
                 <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-6 shadow-sm hero-clip">
                   <Brain className="w-8 h-8 text-[#0284c7] animate-pulse" />
                 </div>
-                <h2 className="text-3xl font-headline font-black text-slate-900 mb-3 tracking-tight">System Initialized</h2>
+                <h2 className="text-3xl font-body font-black text-slate-900 mb-3 tracking-tight">System Initialized</h2>
                 <p className="text-xs text-slate-600 mb-10 font-mono leading-relaxed max-w-lg">
                   AURA-3 intelligence protocol active. Upload documentation for deep analysis or query market benchmarks to begin synthetic evaluation.
                 </p>
@@ -1068,7 +1068,7 @@ export default function FinScopePage() {
                             <span className="text-[10px] font-mono text-[#0284c7] uppercase">{msg.file}</span>
                           </div>
                         )}
-                        <p className="font-headline font-medium text-slate-800 text-[13px] leading-relaxed">{msg.content}</p>
+                        <p className="font-body font-medium text-slate-800 text-[13px] leading-relaxed">{msg.content}</p>
                       </div>
                       <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest opacity-70">
                         {msg.timestamp.toLocaleTimeString()} | ENCRYPTED
@@ -1078,12 +1078,12 @@ export default function FinScopePage() {
                     <div className="flex flex-col items-start gap-4 w-full">
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-6 bg-purple-600"></div>
-                        <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-purple-700">
+                        <span className="font-body text-[10px] font-black uppercase tracking-[3px] text-purple-700">
                           {msg.agent ? msg.agent : "FinScope Intelligence"}
                         </span>
                       </div>
                       <div className="bg-white p-6 md:p-8 border border-slate-200 shadow-sm rounded-tr-3xl rounded-bl-3xl w-full max-w-4xl">
-                        <div className="text-[13px] leading-relaxed text-slate-800 markdown-content font-light flex flex-col gap-4">
+                        <div className="text-[13px] leading-relaxed text-slate-800 markdown-content font-body flex flex-col gap-4">
                           {cleanContent && <ReactMarkdown>{cleanContent}</ReactMarkdown>}
                           {newsData && <ChatNewsCard data={newsData} />}
                           {hasForm && <PortfolioFormCard onSubmit={sendMessage} />}
@@ -1110,7 +1110,7 @@ export default function FinScopePage() {
                         <div className="flex flex-col items-start gap-6 max-w-5xl w-full mt-4">
                           <div className="flex items-center gap-3 ml-2">
                             <div className="w-2 h-6 bg-primary-container"></div>
-                            <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-primary-container">Synthesis Result</span>
+                            <span className="font-body text-[10px] font-black uppercase tracking-[3px] text-primary-container">Synthesis Result</span>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
                             {flashcard && (
@@ -1137,20 +1137,20 @@ export default function FinScopePage() {
             
             {isLoading && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl mb-4 ml-1 md:ml-6 mt-4">
-                <div className="bg-slate-900 border border-purple-500/30 rounded-sm overflow-hidden shadow-md">
-                   <div className="bg-purple-900/20 px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
-                     <span className="text-[9px] font-mono font-bold tracking-[3px] text-purple-400 uppercase animate-pulse">AURA-3 Subagent Execution Core</span>
-                     <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-purple-500/50"></span>
-                        <span className="w-2 h-2 rounded-full bg-purple-500/30"></span>
+                <div className="bg-[#f8fafc] border border-slate-200 rounded-md overflow-hidden shadow-sm">
+                   <div className="bg-slate-100 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
+                     <span className="text-[9px] font-mono font-bold tracking-[3px] text-[#0284c7] uppercase animate-pulse">AURA-3 Subagent Execution Core</span>
+                     <div className="flex gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#0284c7]/50"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#0284c7]/30"></span>
                      </div>
                    </div>
-                   <div className="p-4 font-mono text-[10px] text-slate-300 max-h-[250px] overflow-y-auto flex flex-col gap-1 terminal-scroll">
-                     {logs.length === 0 && <span className="opacity-50 text-purple-400">Initializing autonomous agents...</span>}
+                   <div className="p-4 font-mono text-[10px] text-slate-700 max-h-[250px] overflow-y-auto flex flex-col gap-1 terminal-scroll">
+                     {logs.length === 0 && <span className="opacity-50 text-slate-400 italic">Initializing autonomous agents...</span>}
                      {logs.map((log, idx) => (
-                       <span key={`${idx}-${log}`} className="text-emerald-400 opacity-90 whitespace-pre-wrap break-words"><span className="text-slate-500 mr-2">$</span>{log}</span>
+                       <span key={`${idx}-${log}`} className="text-slate-800 opacity-90 whitespace-pre-wrap break-words"><span className="text-[#0284c7] mr-2">$</span>{log}</span>
                      ))}
-                     <span className="text-purple-400 animate-pulse inline-block mt-2">_</span>
+                     <span className="text-[#0284c7] animate-pulse inline-block mt-2">_</span>
                    </div>
                 </div>
               </motion.div>

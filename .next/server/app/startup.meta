@@ -1,0 +1,17 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/founder",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/startup/layout,_N_T_/startup/page,_N_T_/startup"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/startup/__PAGE__",
+    "/startup",
+    "/_index",
+    "/_head"
+  ]
+}
