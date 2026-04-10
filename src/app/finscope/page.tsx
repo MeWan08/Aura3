@@ -197,8 +197,8 @@ function AgentBadge({ agent }: { agent?: string }) {
 
 function YouTubeCard({ video }: { video: any }) {
   return (
-    <div className="group block rounded-lg overflow-hidden border border-white/10 bg-black/40 shadow-xl">
-      <div className="relative aspect-video overflow-hidden bg-black">
+    <div className="group block rounded-lg overflow-hidden border border-slate-200 bg-white shadow-xl">
+      <div className="relative aspect-video overflow-hidden bg-slate-100">
         <iframe
           width="100%"
           height="100%"
@@ -209,8 +209,8 @@ function YouTubeCard({ video }: { video: any }) {
           className="border-0 w-full h-full"
         />
       </div>
-      <div className="p-3 border-t border-white/10 bg-black/80">
-        <p className="text-[12px] font-bold text-white group-hover:text-[#03e1ff] transition-colors line-clamp-2 leading-snug">
+      <div className="p-3 border-t border-slate-200 bg-slate-50">
+        <p className="text-[12px] font-bold text-slate-800 group-hover:text-[#0284c7] transition-colors line-clamp-2 leading-snug">
           {video.title}
         </p>
       </div>
@@ -231,14 +231,14 @@ function StartupFlashCard({ flashcard }: { flashcard: any }) {
   return (
     <div className="glass-card relative group overflow-hidden flex flex-col rounded-xl w-full h-full">
       {/* Hero Area */}
-      <div className="h-44 relative overflow-hidden hero-clip bg-surface-container-highest">
+      <div className="h-44 relative overflow-hidden hero-clip bg-slate-100">
         <img src={imageUrl} alt="Startup" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-[2000ms]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-80" />
-        <div className="absolute inset-0 bg-[#00daf7]/10 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-[#0284c7]/5 mix-blend-overlay" />
         
         {/* Holographic Overlay */}
-        <div className="absolute top-4 left-4 p-2 bg-black/40 backdrop-blur-md border border-white/10">
-          <span className="font-mono text-[9px] text-primary-container font-bold tracking-widest uppercase">Protocol: AUR-7</span>
+        <div className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm">
+          <span className="font-mono text-[9px] text-[#0284c7] font-bold tracking-widest uppercase">Protocol: AUR-7</span>
         </div>
         
         <div className="absolute bottom-10 left-6">
@@ -279,7 +279,7 @@ function StartupFlashCard({ flashcard }: { flashcard: any }) {
           </div>
         </div>
         
-        <div className="mt-auto flex justify-between items-center bg-white/5 p-4 rounded-lg border border-white/5">
+        <div className="mt-auto flex justify-between items-center bg-slate-50 p-4 rounded-lg border border-slate-200">
           <div className="flex items-center gap-4">
             {/* Circular Progress */}
             <div className="relative w-12 h-12 flex items-center justify-center">
@@ -517,9 +517,9 @@ function ChatNewsCard({ data }: { data: any }) {
   return (
     <div className="mb-4 mt-2">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <Newspaper className="w-4 h-4 text-[#03e1ff]" />
-        <h3 className="text-[11px] font-bold text-white uppercase tracking-widest">
-          Live Market Intel: <span className="text-[#a855f7]">${data.symbol}</span>
+        <Newspaper className="w-4 h-4 text-[#0284c7]" />
+        <h3 className="text-[11px] font-bold text-slate-800 uppercase tracking-widest">
+          Live Market Intel: <span className="text-purple-700">${data.symbol}</span>
         </h3>
       </div>
       <div className="flex flex-col gap-2">
@@ -529,10 +529,10 @@ function ChatNewsCard({ data }: { data: any }) {
             href={item.url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex gap-3 p-3 bg-white/[0.02] border border-white/5 hover:border-[#03e1ff]/30 rounded-sm transition-all duration-300"
+            <div className="group flex gap-3 p-3 bg-white border border-slate-200 hover:border-[#0284c7]/30 rounded-sm transition-all duration-300 shadow-sm"
           >
             {item.photo && (
-              <div className="w-20 h-20 shrink-0 bg-black/60 overflow-hidden rounded-sm hidden sm:block border border-white/5 group-hover:border-[#03e1ff]/20 transition-colors">
+              <div className="w-20 h-20 shrink-0 bg-slate-100 overflow-hidden rounded-sm hidden sm:block border border-slate-100 group-hover:border-[#0284c7]/20 transition-colors">
                 <img
                   src={item.photo}
                   alt=""
@@ -600,9 +600,9 @@ function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
   }
 
   return (
-    <div className="mb-4 mt-3 p-5 rounded-xl border border-[#03e1ff]/30 bg-gradient-to-br from-[#03e1ff]/10 to-transparent backdrop-blur-md shadow-[0_0_20px_rgba(3,225,255,0.05)]">
-      <h3 className="text-[13px] font-extrabold text-white mb-4 flex items-center gap-2 uppercase tracking-wide">
-        <Brain className="w-4 h-4 text-[#03e1ff]" /> Build Custom Portfolio
+    <div className="mb-4 mt-3 p-5 rounded-xl border border-slate-200 bg-white shadow-md">
+      <h3 className="text-[13px] font-extrabold text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wide">
+        <Brain className="w-4 h-4 text-[#0284c7]" /> Build Custom Portfolio
       </h3>
       
       <div className="space-y-5">
@@ -613,7 +613,7 @@ function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
               <button 
                 key={r} 
                 onClick={() => setRisk(r)} 
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${risk === r ? 'bg-[#03e1ff] text-black border-[#03e1ff] shadow-[0_0_10px_rgba(3,225,255,0.4)]' : 'bg-black/50 text-gray-400 border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${risk === r ? 'bg-[#0284c7] text-white border-[#0284c7] shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#0284c7]/50 hover:bg-slate-100'}`}
               >
                 {r}
               </button>
@@ -628,7 +628,7 @@ function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
               <button 
                 key={h} 
                 onClick={() => setHorizon(h)} 
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${horizon === h ? 'bg-[#a855f7] text-white border-[#a855f7] shadow-[0_0_10px_rgba(168,85,247,0.4)]' : 'bg-black/50 text-gray-400 border-white/10 hover:border-white/30 hover:bg-white/5'}`}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border ${horizon === h ? 'bg-purple-600 text-white border-purple-600 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-purple-600/50 hover:bg-slate-100'}`}
               >
                 {h}
               </button>
@@ -649,7 +649,7 @@ function PortfolioFormCard({ onSubmit }: { onSubmit: (msg: string) => void }) {
 
         <button 
           onClick={submit} 
-          className="w-full mt-2 py-3 bg-gradient-to-r from-[#03e1ff] to-[#a855f7] text-white font-extrabold text-[12px] rounded-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest"
+          className="w-full mt-2 py-3 bg-gradient-to-r from-[#0284c7] to-purple-600 text-white font-extrabold text-[12px] rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 uppercase tracking-widest"
         >
           <Sparkles className="w-4 h-4" /> Calculate Asset Allocation
         </button>
@@ -973,22 +973,22 @@ export default function FinScopePage() {
     <div className="bg-background text-on-surface w-full h-[100vh] grid-bg font-body m-0 p-0 overflow-hidden flex">
 
       {/* Sidebar for Chat History */}
-      <aside className={`fixed inset-y-0 left-0 w-64 bg-surface-container border-r border-[#03e1ff]/10 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
+      <aside className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
         <div className="p-4 flex flex-col h-full mt-20">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-secondary font-headline tracking-widest uppercase text-sm">Past Data Links</h2>
-            <button onClick={() => setSidebarOpen(false)} className="text-on-surface-variant hover:text-white">
+            <h2 className="text-slate-900 font-headline tracking-widest uppercase text-sm font-bold">Past Data Links</h2>
+            <button onClick={() => setSidebarOpen(false)} className="text-slate-500 hover:text-slate-900">
               <X className="w-5 h-5" />
             </button>
           </div>
-          <button onClick={startNewChat} className="mb-4 w-full py-2 bg-[#03e1ff]/10 border border-[#03e1ff]/30 text-[#03e1ff] hover:bg-[#03e1ff]/20 text-xs font-mono uppercase tracking-widest transition-colors rounded-sm flex items-center justify-center gap-2">
+          <button onClick={startNewChat} className="mb-4 w-full py-2 bg-slate-50 border border-slate-200 text-[#0284c7] hover:bg-slate-100 text-xs font-mono uppercase tracking-widest transition-colors rounded-sm flex items-center justify-center gap-2 shadow-sm">
             <MessageSquare className="w-4 h-4" /> New Analysis
           </button>
           <div className="flex-1 overflow-y-auto pr-2 space-y-2">
             {pastChats.map(chat => (
-              <button key={chat.id} onClick={() => loadChat(chat.id)} className={`w-full text-left p-3 rounded-sm border ${sessionId === chat.id ? 'bg-[#03e1ff]/5 border-[#03e1ff]/30 text-white' : 'bg-transparent border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200'} transition-all group`}>
-                <div className="text-xs font-bold line-clamp-1 group-hover:text-[#03e1ff] transition-colors">{chat.title}</div>
-                <div className="text-[9px] font-mono mt-1 opacity-60">{chat.timestamp}</div>
+              <button key={chat.id} onClick={() => loadChat(chat.id)} className={`w-full text-left p-3 rounded-md border ${sessionId === chat.id ? 'bg-[#f0f9ff] border-[#0284c7]/30 text-slate-900' : 'bg-transparent border-slate-100 text-slate-600 hover:bg-slate-50 hover:text-slate-900'} transition-all group`}>
+                <div className="text-xs font-bold line-clamp-1 group-hover:text-[#0284c7] transition-colors">{chat.title}</div>
+                <div className="text-[9px] font-mono mt-1 opacity-60 text-slate-500">{chat.timestamp}</div>
               </button>
             ))}
           </div>
@@ -997,7 +997,7 @@ export default function FinScopePage() {
 
       {/* Main Chat Interface */}
       <main className="flex-1 flex flex-col h-full relative">
-        <button onClick={() => setSidebarOpen(true)} className="absolute top-24 left-4 z-40 p-2 bg-surface-container border border-white/10 rounded-sm hover:bg-white/5 transition-colors text-white hidden md:block">
+        <button onClick={() => setSidebarOpen(true)} className="absolute top-24 left-4 z-40 p-2 bg-white border border-slate-200 rounded-sm hover:bg-slate-50 transition-colors text-slate-700 hidden md:block">
           <Menu className="w-5 h-5" />
         </button>
       
@@ -1007,11 +1007,11 @@ export default function FinScopePage() {
             {/* Empty State */}
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center pt-[10vh] text-center max-w-2xl mx-auto">
-                <div className="w-16 h-16 rounded-xl bg-surface-container-highest border border-primary-container/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(3,225,255,0.1)] hero-clip">
-                  <Brain className="w-8 h-8 text-primary-container animate-pulse" />
+                <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-6 shadow-sm hero-clip">
+                  <Brain className="w-8 h-8 text-[#0284c7] animate-pulse" />
                 </div>
-                <h2 className="text-3xl font-headline font-black text-secondary mb-3 tracking-tight">System Initialized</h2>
-                <p className="text-xs text-on-surface-variant mb-10 font-mono leading-relaxed max-w-lg">
+                <h2 className="text-3xl font-headline font-black text-slate-900 mb-3 tracking-tight">System Initialized</h2>
+                <p className="text-xs text-slate-600 mb-10 font-mono leading-relaxed max-w-lg">
                   AURA-3 intelligence protocol active. Upload documentation for deep analysis or query market benchmarks to begin synthetic evaluation.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
@@ -1019,9 +1019,9 @@ export default function FinScopePage() {
                     <button
                       key={i}
                       onClick={() => setInput(q)}
-                      className="text-left text-[11px] text-on-surface-variant hover:text-primary-container px-5 py-4 bg-surface-container-low/50 border border-white/5 hover:border-primary-container/30 rounded-lg transition-all group glass-card flex items-center gap-3"
+                      className="text-left text-[11px] text-slate-600 hover:text-slate-900 px-5 py-4 bg-slate-50 border border-slate-200 hover:border-[#0284c7]/50 rounded-lg transition-all group shadow-sm flex items-center gap-3"
                     >
-                      <span className="text-primary-container/50 group-hover:text-primary-container font-mono text-lg">›</span>
+                      <span className="text-[#0284c7]/50 group-hover:text-[#0284c7] font-mono text-lg">›</span>
                       <span className="font-medium leading-snug">{q}</span>
                     </button>
                   ))}
@@ -1061,29 +1061,29 @@ export default function FinScopePage() {
                 >
                   {msg.role === 'user' ? (
                     <div className="flex flex-col items-end gap-3 max-w-xl">
-                      <div className="bg-primary-container/5 backdrop-blur-xl p-5 border border-primary-container/20 glow-msg-user rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md">
+                      <div className="bg-[#f0f9ff] p-5 border border-[#0284c7]/20 rounded-tl-2xl rounded-br-2xl rounded-tr-md rounded-bl-md shadow-sm">
                         {msg.file && (
-                          <div className="flex items-center gap-2 mb-3 pb-3 border-b border-primary-container/20">
-                            <FileText className="w-3.5 h-3.5 text-primary-container" />
-                            <span className="text-[10px] font-mono text-primary-container uppercase">{msg.file}</span>
+                          <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#0284c7]/20">
+                            <FileText className="w-3.5 h-3.5 text-[#0284c7]" />
+                            <span className="text-[10px] font-mono text-[#0284c7] uppercase">{msg.file}</span>
                           </div>
                         )}
-                        <p className="font-headline font-medium text-secondary text-[13px] leading-relaxed">{msg.content}</p>
+                        <p className="font-headline font-medium text-slate-800 text-[13px] leading-relaxed">{msg.content}</p>
                       </div>
-                      <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest opacity-70">
+                      <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest opacity-70">
                         {msg.timestamp.toLocaleTimeString()} | ENCRYPTED
                       </span>
                     </div>
                   ) : (
                     <div className="flex flex-col items-start gap-4 w-full">
                       <div className="flex items-center gap-3">
-                        <div className="w-2 h-6 bg-tertiary"></div>
-                        <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-tertiary">
+                        <div className="w-2 h-6 bg-purple-600"></div>
+                        <span className="font-headline text-[10px] font-black uppercase tracking-[3px] text-purple-700">
                           {msg.agent ? msg.agent : "FinScope Intelligence"}
                         </span>
                       </div>
-                      <div className="bg-surface-variant/20 backdrop-blur-xl p-6 md:p-8 border border-tertiary/10 glow-msg-ai rounded-tr-3xl rounded-bl-3xl w-full max-w-4xl">
-                        <div className="text-[13px] leading-relaxed text-secondary markdown-content font-light flex flex-col gap-4">
+                      <div className="bg-white p-6 md:p-8 border border-slate-200 shadow-sm rounded-tr-3xl rounded-bl-3xl w-full max-w-4xl">
+                        <div className="text-[13px] leading-relaxed text-slate-800 markdown-content font-light flex flex-col gap-4">
                           {cleanContent && <ReactMarkdown>{cleanContent}</ReactMarkdown>}
                           {newsData && <ChatNewsCard data={newsData} />}
                           {hasForm && <PortfolioFormCard onSubmit={sendMessage} />}
@@ -1137,20 +1137,20 @@ export default function FinScopePage() {
             
             {isLoading && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl mb-4 ml-1 md:ml-6 mt-4">
-                <div className="bg-black/90 border border-tertiary/30 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(221,183,255,0.1)] backdrop-blur-xl">
-                   <div className="bg-tertiary/10 px-4 py-2 border-b border-tertiary/20 flex items-center justify-between">
-                     <span className="text-[9px] font-mono font-bold tracking-[3px] text-tertiary uppercase animate-pulse">AURA-3 Subagent Execution Core</span>
+                <div className="bg-slate-900 border border-purple-500/30 rounded-sm overflow-hidden shadow-md">
+                   <div className="bg-purple-900/20 px-4 py-2 border-b border-purple-500/20 flex items-center justify-between">
+                     <span className="text-[9px] font-mono font-bold tracking-[3px] text-purple-400 uppercase animate-pulse">AURA-3 Subagent Execution Core</span>
                      <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-tertiary/50"></span>
-                        <span className="w-2 h-2 rounded-full bg-tertiary/30"></span>
+                        <span className="w-2 h-2 rounded-full bg-purple-500/50"></span>
+                        <span className="w-2 h-2 rounded-full bg-purple-500/30"></span>
                      </div>
                    </div>
-                   <div className="p-4 font-mono text-[10px] text-on-surface-variant max-h-[250px] overflow-y-auto flex flex-col gap-1 terminal-scroll">
-                     {logs.length === 0 && <span className="opacity-50 text-tertiary">Initializing autonomous agents...</span>}
+                   <div className="p-4 font-mono text-[10px] text-slate-300 max-h-[250px] overflow-y-auto flex flex-col gap-1 terminal-scroll">
+                     {logs.length === 0 && <span className="opacity-50 text-purple-400">Initializing autonomous agents...</span>}
                      {logs.map((log, idx) => (
-                       <span key={`${idx}-${log}`} className="text-secondary opacity-90 whitespace-pre-wrap break-words"><span className="text-tertiary mr-2">$</span>{log}</span>
+                       <span key={`${idx}-${log}`} className="text-emerald-400 opacity-90 whitespace-pre-wrap break-words"><span className="text-slate-500 mr-2">$</span>{log}</span>
                      ))}
-                     <span className="text-tertiary animate-pulse inline-block mt-2">_</span>
+                     <span className="text-purple-400 animate-pulse inline-block mt-2">_</span>
                    </div>
                 </div>
               </motion.div>
@@ -1160,28 +1160,28 @@ export default function FinScopePage() {
         </div>
 
         {/* Input Tools Area */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 md:px-8 py-20 z-20 pointer-events-none bg-gradient-to-t from-background via-background/95 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 px-4 md:px-8 py-20 z-20 pointer-events-none bg-gradient-to-t from-white via-white/95 to-transparent">
           <div className="max-w-4xl mx-auto flex flex-col gap-4 pointer-events-auto">
             
             {/* Quick Suggestions - hidden if not empty state or if we have attached file */}
             {messages.length === 0 && !attachedFile && (
               <div className="flex gap-2 overflow-x-auto terminal-scroll pb-2 hidden sm:flex">
                 {suggestedQuestions.slice(0, 3).map((q, idx) => (
-                  <button key={idx} onClick={() => setInput(q)} className="px-4 py-2 border border-white/5 bg-black/40 backdrop-blur-md rounded-full text-[10px] font-mono text-on-surface-variant hover:text-primary-container hover:border-primary-container/20 whitespace-nowrap transition-colors">
+                  <button key={idx} onClick={() => setInput(q)} className="px-4 py-2 border border-slate-200 bg-white shadow-sm rounded-full text-[10px] font-mono text-slate-600 hover:text-[#0284c7] hover:border-[#0284c7]/30 whitespace-nowrap transition-colors">
                      {q.slice(0, 40)}{q.length > 40 ? '...' : ''}
                   </button>
                 ))}
               </div>
             )}
             
-            <div className="bg-surface-container-highest/80 backdrop-blur-2xl border border-white/10 p-2 md:p-3 rounded-2xl flex flex-col shadow-2xl relative group focus-within:border-primary-container/50 transition-colors duration-500">
+            <div className="bg-white border border-slate-200 p-2 md:p-3 rounded-2xl flex flex-col shadow-lg relative group focus-within:border-[#0284c7]/50 transition-colors duration-500">
               {attachedFile && (
-                <div className="mb-2 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-between">
+                <div className="mb-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-3.5 h-3.5 text-amber-500" />
-                    <span className="text-[11px] font-mono text-amber-500 truncate max-w-[200px]">{attachedFile.name}</span>
+                    <FileText className="w-3.5 h-3.5 text-amber-600" />
+                    <span className="text-[11px] font-mono text-amber-700 truncate max-w-[200px]">{attachedFile.name}</span>
                   </div>
-                  <button onClick={() => { setAttachedFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }} className="text-amber-500/60 hover:text-amber-500">
+                  <button onClick={() => { setAttachedFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }} className="text-amber-500/60 hover:text-amber-600">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -1191,10 +1191,10 @@ export default function FinScopePage() {
                 <input ref={fileInputRef} type="file" accept=".pdf,.docx,.doc,.txt" onChange={handleFileSelect} className="hidden" />
                 <button 
                   onClick={() => fileInputRef.current?.click()} 
-                  className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 text-on-surface-variant transition-colors"
+                  className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center hover:bg-slate-100 text-slate-500 transition-colors border border-slate-200"
                   title="Upload Document"
                 >
-                  <Paperclip className="w-4 h-4 text-primary-container" />
+                  <Paperclip className="w-4 h-4 text-[#0284c7]" />
                 </button>
                 
                 <textarea 
@@ -1207,7 +1207,7 @@ export default function FinScopePage() {
                     }
                   }}
                   placeholder={attachedFile ? "Ask a question about this document..." : "Transmit intelligence protocol parameters..."}
-                  className="flex-1 bg-transparent border-0 outline-none resize-none h-10 py-3 text-[13px] text-secondary placeholder:text-on-surface-variant/50 font-body terminal-scroll"
+                  className="flex-1 bg-transparent border-0 outline-none resize-none h-10 py-3 text-[13px] text-slate-900 placeholder:text-slate-400 font-body terminal-scroll"
                   disabled={isLoading}
                   rows={1}
                 />
@@ -1216,7 +1216,7 @@ export default function FinScopePage() {
                    <button 
                      onClick={() => sendMessage()}
                      disabled={isLoading || (!input.trim() && !attachedFile)}
-                     className="bg-primary hover:bg-primary-container text-on-primary font-black px-6 h-10 rounded-xl uppercase text-[10px] tracking-widest disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                     className="bg-[#0284c7] hover:bg-[#0369a1] text-white font-black px-6 h-10 rounded-xl uppercase text-[10px] tracking-widest disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
                    >
                      Submit <Send className="w-3 h-3" />
                    </button>
@@ -1224,11 +1224,11 @@ export default function FinScopePage() {
               </div>
 
               {/* Decorative Corner */}
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary-container/0 group-focus-within:border-primary-container/50 rounded-tr-2xl transition-colors duration-500 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#0284c7]/0 group-focus-within:border-[#0284c7]/50 rounded-tr-2xl transition-colors duration-500 pointer-events-none"></div>
             </div>
             
             <div className="flex justify-center">
-              <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-widest text-center mt-1">
+              <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest text-center mt-1">
                 AURA-3 IS A SYNTHETIC INTELLIGENCE. NOT FINANCIAL ADVICE.
               </span>
             </div>
