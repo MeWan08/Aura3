@@ -69,12 +69,12 @@ export function NewsTicker() {
   const doubledHeadlines = [...headlines, ...headlines]
 
   return (
-    <div className="w-full bg-black/80 backdrop-blur-md border-b border-white/5 overflow-hidden relative z-40">
+    <div className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 overflow-hidden relative z-40">
       <div className="flex items-center">
         {/* Fixed label */}
-        <div className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-[#03e1ff]/15 to-transparent border-r border-white/10 shrink-0">
-          <Zap className="w-4 h-4 text-[#03e1ff] animate-pulse" />
-          <span className="text-[11px] font-bold font-mono text-[#03e1ff] uppercase tracking-widest whitespace-nowrap">
+        <div className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-slate-100 to-transparent border-r border-slate-200 shrink-0">
+          <Zap className="w-4 h-4 text-[#0284c7] animate-pulse" />
+          <span className="text-[11px] font-bold font-mono text-[#0284c7] uppercase tracking-widest whitespace-nowrap">
             Live Markets
           </span>
         </div>
@@ -94,18 +94,18 @@ export function NewsTicker() {
                 href={item.article_url || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-6 py-2.5 hover:bg-white/5 transition-colors group shrink-0"
+                className="inline-flex items-center gap-2.5 px-6 py-2.5 hover:bg-slate-50 transition-colors group shrink-0"
               >
                 {item.related_symbol && (
-                  <span className="text-[11px] font-bold font-mono text-[#a855f7] bg-[#a855f7]/10 px-2 py-0.5 rounded-sm border border-[#a855f7]/20">
+                  <span className="text-[11px] font-bold font-mono text-purple-700 bg-purple-100 px-2 py-0.5 rounded-sm border border-purple-200">
                     {item.related_symbol}
                   </span>
                 )}
-                <span className="text-[12px] font-medium text-gray-300 group-hover:text-white transition-colors truncate max-w-[450px]">
+                <span className="text-[12px] font-medium text-slate-700 group-hover:text-[#0284c7] transition-colors truncate max-w-[450px]">
                   {item.article_title || 'Breaking news...'}
                 </span>
-                <TrendingUp className="w-3 h-3 text-emerald-500/50 shrink-0" />
-                <span className="text-[10px] text-gray-600 font-mono shrink-0">
+                <TrendingUp className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span className="text-[10px] text-slate-500 font-mono shrink-0">
                   {item.source || ''}
                 </span>
               </a>

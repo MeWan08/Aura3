@@ -109,63 +109,63 @@ export function InvestorActions() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-black">
-      <div className="h-[60px] p-6 border-b border-[#111] bg-[#050505] flex items-center">
-        <h2 className="text-[10px] font-bold font-mono text-white uppercase tracking-widest flex items-center gap-2">
-          <TrendingUp className="w-3.5 h-3.5 text-[#03e1ff]" /> Governance Power
+    <div className="flex flex-col h-full bg-white">
+      <div className="h-[60px] p-6 border-b border-slate-200 bg-slate-50 flex items-center">
+        <h2 className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-widest flex items-center gap-2">
+          <TrendingUp className="w-3.5 h-3.5 text-[#0284c7]" /> Governance Power
         </h2>
       </div>
 
       <div className="flex-1 p-6">
         <div className="mb-6">
-          <div className="grid grid-cols-2 border border-[#111]">
-            <div className="p-4 border-r border-[#111] bg-[#050505]">
-              <p className="text-[9px] font-bold text-sky-300 uppercase mb-1">Treasury Credits</p>
-              <p className="text-sm font-mono text-white leading-none">
+          <div className="grid grid-cols-2 border border-slate-200">
+            <div className="p-4 border-r border-slate-200 bg-slate-50">
+              <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Treasury Credits</p>
+              <p className="text-sm font-mono text-slate-900 leading-none">
                 {govBalance !== undefined ? Number(formatEther(govBalance as bigint)).toFixed(4) : '0.0000'}
               </p>
             </div>
-            <div className="p-4 bg-[#050505]">
-              <p className="text-[9px] font-bold text-sky-300 uppercase mb-1">Active Votes</p>
-              <p className="text-sm font-mono text-[#00ffbd] leading-none">
+            <div className="p-4 bg-slate-50">
+              <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Active Votes</p>
+              <p className="text-sm font-mono text-emerald-600 leading-none">
                 {votingPower !== undefined ? Number(formatEther(votingPower as bigint)).toFixed(2) : '0.00'}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="pt-6 border-t border-[#111]">
-          <h3 className="text-[9px] font-bold text-sky-300 uppercase mb-4 tracking-widest leading-tight">Increase Stake to Amplify Power</h3>
+        <div className="pt-6 border-t border-slate-200">
+          <h3 className="text-[9px] font-bold text-slate-500 uppercase mb-4 tracking-widest leading-tight">Increase Stake to Amplify Power</h3>
           {step > 0 ? (
-            <div className="space-y-px bg-[#111] border border-[#111]">
-              <div className={`p-4 flex items-center justify-between bg-black ${isDepositSuccess ? 'border-l-2 border-[#00ffbd]' : ''}`}>
+            <div className="space-y-px bg-slate-200 border border-slate-200">
+              <div className={`p-4 flex items-center justify-between bg-white ${isDepositSuccess ? 'border-l-2 border-emerald-500' : ''}`}>
                 <div className="flex items-center gap-3">
-                  {isDepositSuccess ? <CheckCircle2 className="w-3 h-3 text-[#00ffbd]" /> : <Loader2 className="w-3 h-3 animate-spin text-[#03e1ff]" />}
-                  <span className="text-[10px] font-bold font-mono text-white uppercase tracking-tighter">I. Credit Transfer ({depositEthPreview || '0'} ETH)</span>
+                  {isDepositSuccess ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <Loader2 className="w-3 h-3 animate-spin text-[#0284c7]" />}
+                  <span className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-tighter">I. Credit Transfer ({depositEthPreview || '0'} ETH)</span>
                 </div>
-                <span className="text-[9px] font-mono text-sky-300 uppercase">{isConfirmingDeposit ? 'Awaiting Sign' : isDepositSuccess ? 'Settled' : 'Mining'}</span>
+                <span className="text-[9px] font-mono text-slate-500 uppercase">{isConfirmingDeposit ? 'Awaiting Sign' : isDepositSuccess ? 'Settled' : 'Mining'}</span>
               </div>
               
-              <div className={`p-4 flex items-center justify-between bg-black ${isDelegateSuccess ? 'border-l-2 border-[#00ffbd]' : ''} ${step < 2 ? 'opacity-30' : ''}`}>
+              <div className={`p-4 flex items-center justify-between bg-white ${isDelegateSuccess ? 'border-l-2 border-emerald-500' : ''} ${step < 2 ? 'opacity-30' : ''}`}>
                 <div className="flex items-center gap-3">
-                  {isDelegateSuccess ? <CheckCircle2 className="w-3 h-3 text-[#00ffbd]" /> : step === 2 ? <Loader2 className="w-3 h-3 animate-spin text-[#03e1ff]" /> : <div className="w-1 h-1 rounded-full bg-[#333]" />}
-                  <span className="text-[10px] font-bold font-mono text-white uppercase tracking-tighter">II. Power Delegation</span>
+                  {isDelegateSuccess ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : step === 2 ? <Loader2 className="w-3 h-3 animate-spin text-[#0284c7]" /> : <div className="w-1 h-1 rounded-full bg-slate-300" />}
+                  <span className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-tighter">II. Power Delegation</span>
                 </div>
-                {step === 2 && <span className="text-[9px] font-mono text-sky-300 uppercase">{isConfirmingDelegate ? 'Awaiting Sign' : isDelegateSuccess ? 'Settled' : 'Mining'}</span>}
+                {step === 2 && <span className="text-[9px] font-mono text-slate-500 uppercase">{isConfirmingDelegate ? 'Awaiting Sign' : isDelegateSuccess ? 'Settled' : 'Mining'}</span>}
               </div>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold text-sky-300 uppercase tracking-widest">Deposit Unit</span>
-                <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Deposit Unit</span>
+                <div className="flex border border-slate-200 bg-slate-50 rounded text-slate-500">
                   <button
                     type="button"
                     onClick={() => {
                       setDepositAmount(convertDisplayUnit(depositAmount, depositUnit, 'usd'))
                       setDepositUnit('usd')
                     }}
-                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-l-sm ${depositUnit === 'usd' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                   >
                     USD
                   </button>
@@ -175,7 +175,7 @@ export function InvestorActions() {
                       setDepositAmount(convertDisplayUnit(depositAmount, depositUnit, 'eth'))
                       setDepositUnit('eth')
                     }}
-                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${depositUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                    className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-r-sm ${depositUnit === 'eth' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                   >
                     ETH
                   </button>
@@ -184,10 +184,10 @@ export function InvestorActions() {
               <input
                 type="number" step="0.01"
                 value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
-                className="input-field h-10"
+                className="input-field h-10 w-full"
                 placeholder={depositUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'}
               />
-              <p className="text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(depositAmount, depositUnit)}</p>
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-tight">{getConversionHint(depositAmount, depositUnit)}</p>
               <button
                 onClick={handleDeposit}
                 disabled={!depositAmount || convertToEth(depositAmount, depositUnit) <= 0}

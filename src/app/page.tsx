@@ -131,7 +131,7 @@ export default function LandingPage() {
                 </div>
 
                 <h1 className="font-headline font-black text-6xl md:text-8xl tracking-tighter mb-7 glitch-text-new uppercase leading-[0.92]">
-                  <span className="text-white">AURA</span><span className="text-[#03e1ff]">3</span>
+                  <span className="text-slate-900">AURA</span><span className="text-[#03e1ff]">3</span>
                 </h1>
 
                 <p className="text-on-surface-variant text-xl max-w-2xl mb-8 leading-relaxed font-light">
@@ -347,7 +347,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className="p-5 text-center">
-                      <h4 className="font-headline font-black text-xl uppercase tracking-wide mb-2 text-white group-hover:text-[#9cf5ff] transition-colors">
+                      <h4 className="font-headline font-black text-xl uppercase tracking-wide mb-2 text-slate-900 group-hover:text-[#0284c7] transition-colors">
                         {step.title}
                       </h4>
                       <p className="text-on-surface-variant text-sm font-light leading-relaxed">

@@ -148,28 +148,28 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <div className="border border-[#111] bg-black">
-      <div className="p-6 border-b border-[#111] bg-[#050505]">
-        <h2 className="text-[10px] font-bold font-mono text-white uppercase tracking-widest flex items-center gap-2">
-          <Rocket className="w-3.5 h-3.5 text-[#03e1ff]" /> Initialize Capital Stream
+    <div className="border border-slate-200 bg-white">
+      <div className="p-6 border-b border-slate-200 bg-slate-50">
+        <h2 className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-widest flex items-center gap-2">
+          <Rocket className="w-3.5 h-3.5 text-[#0284c7]" /> Initialize Capital Stream
         </h2>
       </div>
 
       <div className="p-6">
         {!analysisReport ? (
           <form onSubmit={handleAnalyzeAndSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 border border-[#111]">
-              <div className="p-4 border-r border-[#111]">
+            <div className="grid grid-cols-2 border border-slate-200">
+              <div className="p-4 border-r border-slate-200">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[9px] font-bold text-sky-300 uppercase">Funding Goal ({fundingUnit.toUpperCase()})</label>
-                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                  <label className="block text-[9px] font-bold text-slate-500 uppercase">Funding Goal ({fundingUnit.toUpperCase()})</label>
+                  <div className="flex border border-slate-200 bg-slate-50 rounded text-slate-500">
                     <button
                       type="button"
                       onClick={() => {
                         setFundingAmount(convertDisplayUnit(fundingAmount, fundingUnit, 'usd'))
                         setFundingUnit('usd')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${fundingUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-l-sm ${fundingUnit === 'usd' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       USD
                     </button>
@@ -179,7 +179,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                         setFundingAmount(convertDisplayUnit(fundingAmount, fundingUnit, 'eth'))
                         setFundingUnit('eth')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${fundingUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-r-sm ${fundingUnit === 'eth' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       ETH
                     </button>
@@ -191,19 +191,19 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                   className="input-field h-10"
                   placeholder={fundingUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
-                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(fundingAmount, fundingUnit)}</p>
+                <p className="mt-1 text-[9px] font-mono text-slate-500 uppercase tracking-tight">{getConversionHint(fundingAmount, fundingUnit)}</p>
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[9px] font-bold text-sky-300 uppercase">Valuation ({valuationUnit.toUpperCase()})</label>
-                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                  <label className="block text-[9px] font-bold text-slate-500 uppercase">Valuation ({valuationUnit.toUpperCase()})</label>
+                  <div className="flex border border-slate-200 bg-slate-50 rounded text-slate-500">
                     <button
                       type="button"
                       onClick={() => {
                         setValuation(convertDisplayUnit(valuation, valuationUnit, 'usd'))
                         setValuationUnit('usd')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-l-sm ${valuationUnit === 'usd' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       USD
                     </button>
@@ -213,7 +213,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                         setValuation(convertDisplayUnit(valuation, valuationUnit, 'eth'))
                         setValuationUnit('eth')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-r-sm ${valuationUnit === 'eth' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       ETH
                     </button>
@@ -225,12 +225,12 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
                   className="input-field h-10"
                   placeholder={valuationUnit === 'eth' ? '0.00 ETH' : '0.00 USD'}
                 />
-                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(valuation, valuationUnit)}</p>
+                <p className="mt-1 text-[9px] font-mono text-slate-500 uppercase tracking-tight">{getConversionHint(valuation, valuationUnit)}</p>
               </div>
             </div>
             
-            <div className="border border-[#111] p-4">
-              <label className="block text-[9px] font-bold text-sky-300 uppercase mb-2">Venture Description</label>
+            <div className="border border-slate-200 p-4 bg-white">
+              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-2">Venture Description</label>
               <textarea
                 required rows={3}
                 value={description} onChange={e => setDescription(e.target.value)}
@@ -239,17 +239,17 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
               />
             </div>
 
-            <div className="border border-[#111] bg-black">
-              <label className="block text-[9px] font-bold text-sky-300 uppercase p-4 border-b border-[#111]">Telemetry: Pitch Deck (PDF)</label>
+            <div className="border border-slate-200 bg-white">
+              <label className="block text-[9px] font-bold text-slate-500 uppercase p-4 border-b border-slate-200">Telemetry: Pitch Deck (PDF)</label>
               <div className="p-8 text-center relative group">
                 <input 
                   type="file" accept=".pdf" required
                   onChange={e => setFile(e.target.files?.[0] ?? null)} 
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
-                <UploadCloud className="w-6 h-6 text-sky-200 mx-auto mb-3 group-hover:text-[#03e1ff] transition-colors" />
-                <p className="text-[9px] font-bold font-mono text-sky-300 uppercase tracking-tighter">
-                  {file ? <span className="text-[#00ffbd]">{file.name}</span> : "Upload data package to initialize analysis"}
+                <UploadCloud className="w-6 h-6 text-slate-400 mx-auto mb-3 group-hover:text-[#0284c7] transition-colors" />
+                <p className="text-[9px] font-bold font-mono text-slate-500 uppercase tracking-tighter">
+                  {file ? <span className="text-emerald-600">{file.name}</span> : "Upload data package to initialize analysis"}
                 </p>
               </div>
             </div>
@@ -268,12 +268,12 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
           </form>
         ) : (
           <div className="space-y-6">
-            <div className="border border-[#00ffbd]/20 bg-[#00ffbd]/5 p-6 font-mono">
+            <div className="border border-emerald-200 bg-emerald-50 p-6 font-mono">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-[10px] font-bold text-[#00ffbd] uppercase tracking-widest">AI Audit: SYNTHESIS_COMPLETE</h3>
-                <span className="text-xs text-white font-bold">{analysisReport.score}/10</span>
+                <h3 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">AI Audit: SYNTHESIS_COMPLETE</h3>
+                <span className="text-xs text-slate-900 font-bold">{analysisReport.score}/10</span>
               </div>
-              <p className="text-[10px] text-[#00ffbd]/70 uppercase leading-relaxed">
+              <p className="text-[10px] text-emerald-800 uppercase leading-relaxed">
                 {analysisReport.executiveSummary}
               </p>
             </div>

@@ -98,16 +98,16 @@ export function RoleAuthCard({ role }: RoleAuthCardProps) {
 
   return (
     <section className="max-w-lg w-full mx-auto px-6 py-10">
-      <div className="border border-[#03e1ff]/20 bg-black/70 backdrop-blur-xl rounded-2xl p-8 shadow-[0_0_40px_rgba(3,225,255,0.1)]">
-        <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#03e1ff] mb-3">{copy.roleBadge}</p>
-        <h1 className="text-3xl font-black tracking-tight text-white mb-2">{copy.title}</h1>
-        <p className="text-sm text-sky-200/80 mb-8">{copy.subtitle}</p>
+      <div className="border border-slate-200 bg-white backdrop-blur-xl rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+        <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#0284c7] mb-3">{copy.roleBadge}</p>
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">{copy.title}</h1>
+        <p className="text-sm text-slate-500 mb-8">{copy.subtitle}</p>
 
-        <div className="flex gap-2 mb-6 bg-[#0e0e0e] p-1 rounded-lg border border-[#111]">
+        <div className="flex gap-2 mb-6 bg-slate-50 p-1 rounded-lg border border-slate-200">
           <button
             onClick={() => setMode('login')}
             className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-md transition-colors ${
-              mode === 'login' ? 'bg-[#03e1ff]/20 text-[#03e1ff]' : 'text-sky-200/70 hover:text-sky-100'
+              mode === 'login' ? 'bg-[#0284c7]/15 text-[#0284c7]' : 'text-slate-500 hover:text-slate-700'
             }`}
             type="button"
           >
@@ -116,7 +116,7 @@ export function RoleAuthCard({ role }: RoleAuthCardProps) {
           <button
             onClick={() => setMode('signup')}
             className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-md transition-colors ${
-              mode === 'signup' ? 'bg-[#03e1ff]/20 text-[#03e1ff]' : 'text-sky-200/70 hover:text-sky-100'
+              mode === 'signup' ? 'bg-[#0284c7]/15 text-[#0284c7]' : 'text-slate-500 hover:text-slate-700'
             }`}
             type="button"
           >
@@ -126,19 +126,19 @@ export function RoleAuthCard({ role }: RoleAuthCardProps) {
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-sky-300 mb-2">Email</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
-              className="w-full bg-black border border-[#1f1f1f] focus:border-[#03e1ff]/40 rounded-lg px-4 py-3 text-sm text-white outline-none"
+              className="w-full bg-white border border-slate-200 focus:border-[#0284c7]/50 rounded-lg px-4 py-3 text-sm text-slate-900 outline-none"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-sky-300 mb-2">Password</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -146,13 +146,13 @@ export function RoleAuthCard({ role }: RoleAuthCardProps) {
                 onChange={(event) => setPassword(event.target.value)}
                 required
                 minLength={6}
-                className="w-full bg-black border border-[#1f1f1f] focus:border-[#03e1ff]/40 rounded-lg px-4 py-3 pr-12 text-sm text-white outline-none"
+                className="w-full bg-white border border-slate-200 focus:border-[#0284c7]/50 rounded-lg px-4 py-3 pr-12 text-sm text-slate-900 outline-none"
                 placeholder="At least 6 characters"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((previous) => !previous)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-sky-300/80 hover:text-sky-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 aria-label="Toggle password visibility"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -161,31 +161,31 @@ export function RoleAuthCard({ role }: RoleAuthCardProps) {
           </div>
 
           {error && (
-            <p className="text-xs text-red-400 border border-red-500/30 bg-red-950/20 px-3 py-2 rounded-md">{error}</p>
+            <p className="text-xs text-red-600 border border-red-200 bg-red-50 px-3 py-2 rounded-md">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 text-xs font-black uppercase tracking-widest bg-[#03e1ff] text-black rounded-lg hover:brightness-110 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3 text-xs font-black uppercase tracking-widest bg-[#0284c7] text-white rounded-lg hover:brightness-110 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? 'Please wait...' : mode === 'signup' ? 'Create account' : 'Login'}
           </button>
         </form>
 
-        <div className="my-5 h-px bg-[#1a1a1a]" />
+        <div className="my-5 h-px bg-slate-200" />
 
         <button
           onClick={googleLogin}
           disabled={loading}
-          className="w-full py-3 text-xs font-bold uppercase tracking-widest bg-transparent border border-[#03e1ff]/40 text-sky-100 rounded-lg hover:bg-[#03e1ff]/10 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full py-3 text-xs font-bold uppercase tracking-widest bg-transparent border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition disabled:opacity-60 disabled:cursor-not-allowed"
         >
           Continue with Google
         </button>
 
         <div className="mt-6 flex items-center justify-between text-xs">
-          <Link href="/" className="text-sky-300/70 hover:text-sky-100 transition-colors">Back to landing</Link>
-          <Link href={copy.alternateHref} className="text-[#03e1ff] hover:text-sky-200 transition-colors">{copy.alternateText}</Link>
+          <Link href="/" className="text-slate-500 hover:text-slate-700 transition-colors">Back to landing</Link>
+          <Link href={copy.alternateHref} className="text-[#0284c7] hover:text-sky-700 transition-colors">{copy.alternateText}</Link>
         </div>
       </div>
     </section>

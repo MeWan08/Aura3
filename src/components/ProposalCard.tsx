@@ -83,26 +83,26 @@ export function ProposalCard({
           rotateY,
           transformStyle: "preserve-3d"
         }}
-        className="glass-panel group relative flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center py-6 px-8 gap-8 w-full border border-white/5 bg-black/60 shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
+        className="glass-panel group relative flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center py-6 px-8 gap-8 w-full border border-slate-200 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
       >
         {/* Animated Connecting SVG Border Effect */}
-        <div className="absolute inset-0 border border-[#03e1ff]/0 group-hover:border-[#03e1ff]/30 transition-colors duration-500 block pointer-events-none" style={{ transform: "translateZ(-20px)" }} />
+        <div className="absolute inset-0 border border-[#0284c7]/0 group-hover:border-[#0284c7]/30 transition-colors duration-500 block pointer-events-none" style={{ transform: "translateZ(-20px)" }} />
         
         {/* Glow backdrop tracking mouse */}
         <motion.div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#03e1ff]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none blur-md"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0284c7]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none blur-md"
           style={{ transform: "translateZ(10px)" }}
         />
 
         <div className="flex items-center gap-6 min-w-[250px] flex-1" style={{ transform: "translateZ(30px)" }}>
           <StartupAvatar seed={proposal.id} size={48} />
           <div className="flex flex-col">
-            <h3 className="text-base font-bold text-white mb-1.5 group-hover:text-[#03e1ff] transition-colors drop-shadow-md">{proposal.description}</h3>
+            <h3 className="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#0284c7] transition-colors drop-shadow-md">{proposal.description}</h3>
             <div className="flex items-center gap-3">
               <span className={`text-[10px] font-bold font-mono tracking-[0.25em] uppercase ${badgeColor} drop-shadow-[0_0_5px_currentColor] border border-current px-2 py-0.5 rounded-sm`}>
                 {statusText}
               </span>
-              <span className="text-white/30 text-[10px] font-bold font-mono tracking-[0.2em]">SEQ-{proposal.id}</span>
+              <span className="text-slate-400 text-[10px] font-bold font-mono tracking-[0.2em]">SEQ-{proposal.id}</span>
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ export function ProposalCard({
             <p className="text-[10px] font-bold font-mono text-sky-400 uppercase tracking-[0.2em] mb-2 opacity-60">Capital Target</p>
             <CurrencyDisplay value={Number(formatEther(proposal.fundingAmount))} decimals={3} />
           </div>
-          <div className="hidden lg:block w-px h-10 bg-white/10" />
+          <div className="hidden lg:block w-px h-10 bg-slate-200" />
           <div className="text-right">
             <p className="text-[10px] font-bold font-mono text-[#00ffbd] uppercase tracking-[0.2em] mb-2 opacity-60">Valuation Lock</p>
             <CurrencyDisplay value={Number(formatEther(proposal.valuation))} decimals={3} />
@@ -122,11 +122,11 @@ export function ProposalCard({
         <div className="shrink-0 ml-0 md:ml-auto flex items-center relative z-20 w-full md:w-auto" style={{ transform: "translateZ(50px)" }}>
           <Link
             href={accessNodeHref}
-            className="flex items-center justify-center px-6 py-3 rounded-sm border border-white/20 group-hover:border-[#03e1ff]/80 transition-all bg-black/80 hover:bg-[#03e1ff]/10 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_20px_rgba(3,225,255,0.4)] overflow-hidden relative w-full md:w-auto"
+            className="flex items-center justify-center px-6 py-3 rounded-sm border border-slate-200 group-hover:border-[#0284c7]/60 transition-all bg-white hover:bg-[#0284c7]/5 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.05)] group-hover:shadow-[0_4px_20px_rgba(2,132,199,0.15)] overflow-hidden relative w-full md:w-auto"
           >
-            <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-[linear-gradient(45deg,transparent_25%,rgba(3,225,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[bg-shift_2s_linear_infinite]" />
-            <span className="text-[11px] font-bold font-mono text-sky-300 group-hover:text-white transition-colors tracking-[0.3em] uppercase mr-3 relative z-10">Access Node</span>
-            <ArrowRight className="w-4 h-4 text-sky-400 group-hover:text-[#03e1ff] group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
+            <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-[linear-gradient(45deg,transparent_25%,rgba(2,132,199,0.1)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[bg-shift_2s_linear_infinite]" />
+            <span className="text-[11px] font-bold font-mono text-slate-600 group-hover:text-slate-900 transition-colors tracking-[0.3em] uppercase mr-3 relative z-10">Access Node</span>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#0284c7] group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
           </Link>
         </div>
       </motion.div>

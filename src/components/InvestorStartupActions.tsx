@@ -77,52 +77,52 @@ export function InvestorStartupActions({ address, initialValuation }: { address:
   }
 
   return (
-    <div className="bg-[#050505] flex flex-col h-full">
-      <div className="h-[60px] p-6 border-b border-[#111] flex justify-between items-center">
+    <div className="bg-white flex flex-col h-full border-r border-slate-200">
+      <div className="h-[60px] p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
         <div className="flex items-center gap-2">
-          <Zap className="w-3.5 h-3.5 text-[#03e1ff]" />
-          <h3 className="text-[10px] font-bold font-mono text-white uppercase tracking-widest">Investor Operations</h3>
+          <Zap className="w-3.5 h-3.5 text-[#0284c7]" />
+          <h3 className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-widest">Investor Operations</h3>
         </div>
         <div className="flex items-center gap-2">
-           <span className="text-[9px] font-bold font-mono text-sky-300 uppercase">Balance:</span>
-           <span className="text-[10px] font-mono text-[#00ffbd]">{tokenBalance !== undefined ? Number(formatEther(tokenBalance as bigint)).toFixed(4) : '0.0000'} SET</span>
+           <span className="text-[9px] font-bold font-mono text-slate-500 uppercase">Balance:</span>
+           <span className="text-[10px] font-mono text-emerald-600">{tokenBalance !== undefined ? Number(formatEther(tokenBalance as bigint)).toFixed(4) : '0.0000'} SET</span>
         </div>
       </div>
 
       <div className="p-6 overflow-y-auto">
-        <div className="space-y-px bg-[#111] border border-[#111] mb-6">
-          <div className="bg-black p-3 flex items-center justify-between group">
+        <div className="space-y-px bg-slate-200 border border-slate-200 mb-6 rounded-md overflow-hidden">
+          <div className="bg-white p-3 flex items-center justify-between group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-300" />
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
               <div className="overflow-hidden">
-                <p className="text-[9px] text-sky-300 font-bold uppercase tracking-tight">Contract ID</p>
-                <p className="font-mono text-[10px] text-white truncate">{address}</p>
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tight">Contract ID</p>
+                <p className="font-mono text-[10px] text-slate-900 truncate">{address}</p>
               </div>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => handleCopy(address, 'contract')} className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
-                {copied === 'contract' ? <span className="text-[8px] text-[#00ffbd]">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
+              <button onClick={() => handleCopy(address, 'contract')} className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
+                {copied === 'contract' ? <span className="text-[8px] text-emerald-600">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
               </button>
-              <a href={`https://sepolia.etherscan.io/address/${address}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
+              <a href={`https://sepolia.etherscan.io/address/${address}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
 
           {startupTokenAddress && (
-            <div className="bg-black p-3 flex items-center justify-between group">
+            <div className="bg-white p-3 flex items-center justify-between group">
               <div className="flex items-center gap-3 overflow-hidden">
-                <Zap className="w-3.5 h-3.5 text-sky-300" />
+                <Zap className="w-3.5 h-3.5 text-slate-500" />
                 <div className="overflow-hidden">
-                  <p className="text-[9px] text-sky-300 font-bold uppercase tracking-tight">Token ID</p>
-                  <p className="font-mono text-[10px] text-white truncate">{startupTokenAddress as string}</p>
+                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tight">Token ID</p>
+                  <p className="font-mono text-[10px] text-slate-900 truncate">{startupTokenAddress as string}</p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => handleCopy(startupTokenAddress as string, 'token')} className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
-                  {copied === 'token' ? <span className="text-[8px] text-[#00ffbd]">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
+                <button onClick={() => handleCopy(startupTokenAddress as string, 'token')} className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
+                  {copied === 'token' ? <span className="text-[8px] text-emerald-600">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
                 </button>
-                <a href={`https://sepolia.etherscan.io/address/${startupTokenAddress}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
+                <a href={`https://sepolia.etherscan.io/address/${startupTokenAddress}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -130,35 +130,35 @@ export function InvestorStartupActions({ address, initialValuation }: { address:
           )}
         </div>
 
-        <div className="grid grid-cols-3 border border-[#111]">
-          <div className="p-4 border-r border-[#111] bg-black">
-            <p className="text-[9px] font-bold text-sky-300 uppercase mb-2 tracking-wide">Exit Yield</p>
-            <p className="text-sm font-mono text-white leading-none">
+        <div className="grid grid-cols-3 border border-slate-200">
+          <div className="p-4 border-r border-slate-200 bg-white">
+            <p className="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-wide">Exit Yield</p>
+            <p className="text-sm font-mono text-slate-900 leading-none">
               {Number(exitAmount ? formatEther(exitAmount as bigint) : '0').toFixed(4)}
-              <span className="text-[9px] text-[#444] ml-1">ETH</span>
+              <span className="text-[9px] text-slate-400 ml-1">ETH</span>
             </p>
           </div>
-          <div className="p-4 border-r border-[#111] bg-black">
-            <p className="text-[9px] font-bold text-[#00ffbd] uppercase mb-2 tracking-wide">Remaining Liquidity</p>
-            <p className="text-sm font-mono text-[#00ffbd] leading-none">
+          <div className="p-4 border-r border-slate-200 bg-white">
+            <p className="text-[9px] font-bold text-emerald-600 uppercase mb-2 tracking-wide">Remaining Liquidity</p>
+            <p className="text-sm font-mono text-emerald-600 leading-none">
               {Number(exitPool ? formatEther(exitPool as bigint) : '0').toFixed(4)}
-              <span className="text-[9px] text-[#00ffbd]/60 ml-1">ETH</span>
+              <span className="text-[9px] text-emerald-600/60 ml-1">ETH</span>
             </p>
           </div>
-          <div className="p-4 bg-black">
-            <p className="text-[9px] font-bold text-sky-300 uppercase mb-2 tracking-wide">Exit Status</p>
-            <p className={`font-bold font-mono text-sm leading-none uppercase tracking-tighter ${exitOpen ? 'text-[#03e1ff]' : 'text-sky-400'}`}>
+          <div className="p-4 bg-white">
+            <p className="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-wide">Exit Status</p>
+            <p className={`font-bold font-mono text-sm leading-none uppercase tracking-tighter ${exitOpen ? 'text-[#0284c7]' : 'text-slate-400'}`}>
               {exitOpen ? 'Open' : 'Locked'}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="p-6 bg-[#030303] mt-auto border-t border-[#111]">
+      <div className="p-6 bg-slate-50 mt-auto border-t border-slate-200">
         <div className="space-y-6">
           {!hasClaimed ? (
             <div className="space-y-3">
-              <p className="text-[9px] font-bold text-sky-300 uppercase tracking-widest">Equity Claim</p>
+              <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Equity Claim</p>
               <button 
                 onClick={handleClaim} 
                 disabled={isPending} 
@@ -168,28 +168,28 @@ export function InvestorStartupActions({ address, initialValuation }: { address:
               </button>
             </div>
           ) : (
-            <div className="p-4 border border-[#111] bg-[#00ffbd]/5">
-              <p className="text-[9px] font-bold text-[#00ffbd] uppercase mb-1 flex items-center gap-2">
+            <div className="p-4 border border-emerald-200 bg-emerald-50 text-emerald-800">
+              <p className="text-[9px] font-bold text-emerald-600 uppercase mb-1 flex items-center gap-2">
                 <CheckCircle className="w-3 h-3" /> Position Secured
               </p>
-              <p className="text-[9px] text-[#00ffbd]/60 font-mono tracking-tighter uppercase">Equity tokens present in wallet</p>
+              <p className="text-[9px] text-emerald-600/80 font-mono tracking-tighter uppercase">Equity tokens present in wallet</p>
             </div>
           )}
 
-          <div className="pt-6 border-t border-[#111] space-y-3">
-            <p className="text-[9px] font-bold text-sky-300 uppercase tracking-widest">Liquidate Position</p>
+          <div className="pt-6 border-t border-slate-200 space-y-3">
+            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Liquidate Position</p>
             {hasExited ? (
-              <div className="p-4 border border-[#111] bg-white/[0.02]">
-                <p className="text-[9px] font-bold text-white uppercase mb-1 flex items-center gap-2">
-                  <CheckCircle className="w-3 h-3 text-[#03e1ff]" /> Terminated
+              <div className="p-4 border border-emerald-200 bg-emerald-50">
+                <p className="text-[9px] font-bold text-emerald-800 uppercase mb-1 flex items-center gap-2">
+                  <CheckCircle className="w-3 h-3 text-emerald-600" /> Terminated
                 </p>
-                <p className="text-[9px] text-sky-300 font-mono tracking-tighter uppercase">Contract position successfully settled</p>
+                <p className="text-[9px] text-emerald-700 font-mono tracking-tighter uppercase">Contract position successfully settled</p>
               </div>
             ) : (
               <button 
                 onClick={handleExit} 
                 disabled={isPending || !exitOpen || !exitAmount || (exitAmount as bigint) === BigInt(0)} 
-                className={`btn-pro w-full h-10 ${exitOpen ? 'btn-pro-cyan shadow-[0_0_15px_rgba(3,225,255,0.05)]' : 'btn-pro-outline opacity-20'}`}
+                className={`btn-pro w-full h-10 ${exitOpen ? 'btn-pro-cyan shadow-[0_4px_12px_rgba(2,132,199,0.1)]' : 'btn-pro-outline opacity-20'}`}
               >
                 {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : (
                   <span className="flex items-center gap-2 justify-center">
@@ -200,7 +200,7 @@ export function InvestorStartupActions({ address, initialValuation }: { address:
             )}
             
             {!exitOpen && (
-              <p className="text-[9px] font-bold font-mono text-sky-400 uppercase text-center tracking-tight">
+              <p className="text-[9px] font-bold font-mono text-slate-500 uppercase text-center tracking-tight">
                 [ Waiting for founder liquidity injection ]
               </p>
             )}

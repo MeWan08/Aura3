@@ -103,7 +103,7 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
 
   return (
     <CardContainer containerClassName="py-0 w-full">
-      <CardBody className="relative w-full h-[360px] rounded-2xl border border-[#03e1ff]/20 bg-[#050c18] hover:border-[#03e1ff]/55 hover:shadow-[0_28px_64px_rgba(0,0,0,0.75),0_0_32px_rgba(3,225,255,0.12)] transition-all duration-300 overflow-hidden group/card">
+      <CardBody className="relative w-full h-[360px] rounded-2xl border border-slate-200 bg-white hover:border-[#0284c7]/50 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden group/card">
 
         {/* Image — highest float */}
         <CardItem translateZ={80} className="w-full">
@@ -117,7 +117,7 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
               className="w-full h-full object-cover opacity-75 group-hover/card:opacity-100 group-hover/card:scale-105 transition-all duration-500"
             />
             {/* Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050c18] via-[#050c18]/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
 
             {/* Symbol badge */}
             {item.related_symbol && (
@@ -127,7 +127,7 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
             )}
 
             {/* Source badge */}
-            <span className="absolute top-3 right-3 z-10 text-[9px] font-mono text-[#03e1ff] bg-black/75 border border-[#03e1ff]/30 px-2.5 py-1 rounded-md uppercase tracking-widest">
+            <span className="absolute top-3 right-3 z-10 text-[9px] font-mono text-[#0284c7] bg-white/90 border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest shadow-sm">
               {item.source || 'News'}
             </span>
           </div>
@@ -135,7 +135,7 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
 
         {/* Title */}
         <CardItem translateZ={50} className="px-4 mt-3 w-full">
-          <h3 className="text-[13px] font-semibold text-gray-100 group-hover/card:text-[#03e1ff] transition-colors leading-snug line-clamp-2">
+          <h3 className="text-[13px] font-semibold text-slate-900 group-hover/card:text-[#0284c7] transition-colors leading-snug line-clamp-2">
             {item.article_title || 'Breaking news...'}
           </h3>
         </CardItem>
@@ -143,28 +143,28 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
         {/* Snippet */}
         {item.snippet && (
           <CardItem translateZ={30} className="px-4 mt-2 w-full">
-            <p className="text-[11.5px] text-gray-500 leading-relaxed line-clamp-2">
+            <p className="text-[11.5px] text-slate-600 leading-relaxed line-clamp-2">
               {item.snippet}
             </p>
           </CardItem>
         )}
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-3 border-t border-white/[0.07] flex items-center gap-2">
+        <div className="absolute bottom-0 left-0 right-0 px-4 py-3 border-t border-slate-100 flex items-center gap-2 bg-white/80 backdrop-blur-md">
           <CardItem translateZ={20} className="flex items-center gap-2 flex-1 min-w-0">
-            <Clock size={11} className="text-gray-600 flex-shrink-0" />
-            <span className="text-[10px] font-mono text-gray-600 truncate">
+            <Clock size={11} className="text-slate-400 flex-shrink-0" />
+            <span className="text-[10px] font-mono text-slate-500 truncate">
               {formattedDate}
             </span>
           </CardItem>
-          <TrendingUp size={11} className="text-emerald-500/60 group-hover/card:text-emerald-400 transition-colors flex-shrink-0" />
+          <TrendingUp size={11} className="text-emerald-500/60 group-hover/card:text-emerald-500 transition-colors flex-shrink-0" />
           <CardItem
             as="a"
             translateZ={40}
             href={item.article_url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-[10px] font-mono text-gray-600 hover:text-[#03e1ff] transition-colors flex-shrink-0"
+            className="flex items-center gap-1 text-[10px] font-mono text-slate-500 hover:text-[#0284c7] transition-colors flex-shrink-0"
           >
             <ExternalLink size={11} />
             <span>Read</span>
@@ -179,7 +179,7 @@ function NewsCard3D({ item, index }: { item: NewsArticle; index: number }) {
 
 function SkeletonCard() {
   return (
-    <div className="h-[360px] rounded-2xl border border-[#03e1ff]/10 bg-[#0a1020] animate-pulse" />
+    <div className="h-[360px] rounded-2xl border border-slate-200 bg-slate-100 animate-pulse" />
   )
 }
 
@@ -217,16 +217,16 @@ export function NewsCards() {
   }, [])
 
   return (
-    <section className="w-full bg-black mt-16 pb-10 px-6">
+    <section className="w-full bg-slate-50 mt-16 pb-10 px-6">
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 rounded-xl border border-[#03e1ff]/25 bg-[#03e1ff]/[0.07] flex items-center justify-center shadow-[0_0_20px_rgba(3,225,255,0.08)] flex-shrink-0">
-          <Newspaper size={22} className="text-[#03e1ff]" />
+        <div className="w-12 h-12 rounded-xl border border-slate-200 bg-white flex items-center justify-center shadow-sm flex-shrink-0">
+          <Newspaper size={22} className="text-[#0284c7]" />
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-sm font-bold text-white uppercase tracking-widest">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-widest">
               Live Market Intel
             </h2>
             <span className="relative flex h-2 w-2">

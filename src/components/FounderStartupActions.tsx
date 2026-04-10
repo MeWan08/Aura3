@@ -106,51 +106,51 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
   }
 
   return (
-    <div className="bg-[#050505] flex flex-col h-full border-r border-[#111]">
-      <div className="h-[60px] p-6 border-b border-[#111] flex justify-between items-center">
+    <div className="bg-white flex flex-col h-full border-r border-slate-200">
+      <div className="h-[60px] p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
         <div className="flex items-center gap-2">
-          <Settings className="w-3.5 h-3.5 text-[#03e1ff]" />
-          <h3 className="text-[10px] font-bold font-mono text-white uppercase tracking-widest">Founder Controls</h3>
+          <Settings className="w-3.5 h-3.5 text-[#0284c7]" />
+          <h3 className="text-[10px] font-bold font-mono text-slate-900 uppercase tracking-widest">Founder Controls</h3>
         </div>
-        <div className={`px-2 py-0.5 border text-[8px] font-bold font-mono uppercase tracking-tighter ${exitOpen ? 'bg-[#00ffbd]/5 text-[#00ffbd] border-[#00ffbd]/20' : 'bg-[#333]/5 text-sky-400 border-[#111]'}`}>
+        <div className={`px-2 py-0.5 border text-[8px] font-bold font-mono uppercase tracking-tighter ${exitOpen ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
           {exitOpen ? 'Stream: Open' : 'Stream: Locked'}
         </div>
       </div>
 
       <div className="p-6 overflow-y-auto">
-        <div className="space-y-px bg-[#111] border border-[#111] mb-6">
-          <div className="bg-black p-3 flex items-center justify-between group">
+        <div className="space-y-px bg-slate-200 border border-slate-200 mb-6 rounded-md overflow-hidden">
+          <div className="bg-white p-3 flex items-center justify-between group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-300" />
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
               <div className="overflow-hidden">
-                <p className="text-[9px] text-sky-300 font-bold uppercase tracking-tight">Contract ID</p>
-                <p className="font-mono text-[10px] text-white truncate">{address}</p>
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tight">Contract ID</p>
+                <p className="font-mono text-[10px] text-slate-900 truncate">{address}</p>
               </div>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => handleCopy(address, 'contract')} className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
-                {copied === 'contract' ? <span className="text-[8px] text-[#00ffbd]">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
+              <button onClick={() => handleCopy(address, 'contract')} className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
+                {copied === 'contract' ? <span className="text-[8px] text-emerald-600">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
               </button>
-              <a href={`https://sepolia.etherscan.io/address/${address}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
+              <a href={`https://sepolia.etherscan.io/address/${address}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
 
           {startupTokenAddress && (
-            <div className="bg-black p-3 flex items-center justify-between group">
+            <div className="bg-white p-3 flex items-center justify-between group">
               <div className="flex items-center gap-3 overflow-hidden">
-                <Zap className="w-3.5 h-3.5 text-sky-300" />
+                <Zap className="w-3.5 h-3.5 text-slate-500" />
                 <div className="overflow-hidden">
-                  <p className="text-[9px] text-sky-300 font-bold uppercase tracking-tight">Token ID</p>
-                  <p className="font-mono text-[10px] text-white truncate">{startupTokenAddress as string}</p>
+                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tight">Token ID</p>
+                  <p className="font-mono text-[10px] text-slate-900 truncate">{startupTokenAddress as string}</p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => handleCopy(startupTokenAddress as string, 'token')} className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
-                  {copied === 'token' ? <span className="text-[8px] text-[#00ffbd]">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
+                <button onClick={() => handleCopy(startupTokenAddress as string, 'token')} className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
+                  {copied === 'token' ? <span className="text-[8px] text-emerald-600">COPIED</span> : <Copy className="w-3.5 h-3.5" />}
                 </button>
-                <a href={`https://sepolia.etherscan.io/address/${startupTokenAddress}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#03e1ff] transition-colors text-sky-400">
+                <a href={`https://sepolia.etherscan.io/address/${startupTokenAddress}`} target="_blank" rel="noreferrer" className="p-1 hover:text-[#0284c7] transition-colors text-slate-400">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -158,46 +158,46 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
           )}
         </div>
 
-        <div className="grid grid-cols-3 border border-[#111]">
-          <div className="p-4 border-r border-[#111] bg-black">
-            <p className="text-[9px] font-bold text-sky-300 uppercase mb-2 tracking-wide">Target Valuation</p>
-            <p className="text-sm font-mono text-white leading-none">
+        <div className="grid grid-cols-3 border border-slate-200">
+          <div className="p-4 border-r border-slate-200 bg-white">
+            <p className="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-wide">Target Valuation</p>
+            <p className="text-sm font-mono text-slate-900 leading-none">
               {Number(formatEther(currentValuation ? (currentValuation as bigint) : initialValuation)).toFixed(4)}
-              <span className="text-[9px] text-[#444] ml-1">ETH</span>
+              <span className="text-[9px] text-slate-400 ml-1">ETH</span>
             </p>
           </div>
-          <div className="p-4 border-r border-[#111] bg-black">
-            <p className="text-[9px] font-bold text-sky-300 uppercase mb-2 tracking-wide">Exit Liquidity</p>
-            <p className="text-sm font-mono text-white leading-none">
+          <div className="p-4 border-r border-slate-200 bg-white">
+            <p className="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-wide">Exit Liquidity</p>
+            <p className="text-sm font-mono text-slate-900 leading-none">
               {Number(exitValuation ? formatEther(exitValuation as bigint) : '0').toFixed(4)}
-              <span className="text-[9px] text-[#444] ml-1">ETH</span>
+              <span className="text-[9px] text-slate-400 ml-1">ETH</span>
             </p>
           </div>
-          <div className="p-4 bg-black">
-            <p className="text-[9px] font-bold text-[#00ffbd] uppercase mb-2 tracking-wide">Remaining Liquidity</p>
-            <p className="text-sm font-mono text-[#00ffbd] leading-none">
+          <div className="p-4 bg-white">
+            <p className="text-[9px] font-bold text-emerald-600 uppercase mb-2 tracking-wide">Remaining Liquidity</p>
+            <p className="text-sm font-mono text-emerald-600 leading-none">
               {Number(exitPool ? formatEther(exitPool as bigint) : '0').toFixed(4)}
-              <span className="text-[9px] text-[#00ffbd]/60 ml-1">ETH</span>
+              <span className="text-[9px] text-emerald-600/60 ml-1">ETH</span>
             </p>
           </div>
         </div>
       </div>
 
-      <div className="p-6 bg-[#030303] mt-auto border-t border-[#111]">
+      <div className="p-6 bg-slate-50 mt-auto border-t border-slate-200">
         {!exitOpen ? (
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest">New Exit Valuation ({valuationUnit.toUpperCase()})</label>
-                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                  <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-widest">New Exit Valuation ({valuationUnit.toUpperCase()})</label>
+                  <div className="flex border border-slate-200 bg-slate-50 rounded text-slate-500">
                     <button
                       type="button"
                       onClick={() => {
                         setInputValuation(convertDisplayUnit(inputValuation, valuationUnit, 'usd'))
                         setValuationUnit('usd')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-l-sm ${valuationUnit === 'usd' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       USD
                     </button>
@@ -207,7 +207,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                         setInputValuation(convertDisplayUnit(inputValuation, valuationUnit, 'eth'))
                         setValuationUnit('eth')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${valuationUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-r-sm ${valuationUnit === 'eth' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       ETH
                     </button>
@@ -216,21 +216,21 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                 <input 
                   type="number" step="0.0000001" min="0"
                   value={inputValuation} onChange={e => setInputValuation(e.target.value)} 
-                  className="input-field h-10 px-4" placeholder={valuationUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
+                  className="input-field h-10 px-4 w-full" placeholder={valuationUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
-                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(inputValuation, valuationUnit)}</p>
+                <p className="mt-1 text-[9px] font-mono text-slate-500 uppercase tracking-tight">{getConversionHint(inputValuation, valuationUnit)}</p>
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[9px] font-bold text-sky-300 uppercase tracking-widest">Deposit Liquidity ({poolUnit.toUpperCase()})</label>
-                  <div className="flex border border-[#1a1a1a] bg-[#080808]">
+                  <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-widest">Deposit Liquidity ({poolUnit.toUpperCase()})</label>
+                  <div className="flex border border-slate-200 bg-slate-50 rounded text-slate-500">
                     <button
                       type="button"
                       onClick={() => {
                         setInputPool(convertDisplayUnit(inputPool, poolUnit, 'usd'))
                         setPoolUnit('usd')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'usd' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-l-sm ${poolUnit === 'usd' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       USD
                     </button>
@@ -240,7 +240,7 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                         setInputPool(convertDisplayUnit(inputPool, poolUnit, 'eth'))
                         setPoolUnit('eth')
                       }}
-                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase ${poolUnit === 'eth' ? 'text-black bg-[#03e1ff]' : 'text-sky-300'}`}
+                      className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded-r-sm ${poolUnit === 'eth' ? 'text-white bg-[#0284c7]' : 'hover:bg-slate-100 hover:text-slate-700'}`}
                     >
                       ETH
                     </button>
@@ -249,9 +249,9 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
                 <input 
                   type="number" step="0.0000001" min="0"
                   value={inputPool} onChange={e => setInputPool(e.target.value)} 
-                  className="input-field h-10 px-4" placeholder={poolUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
+                  className="input-field h-10 px-4 w-full" placeholder={poolUnit === 'eth' ? '0.0000000 ETH' : '0.00 USD'} 
                 />
-                <p className="mt-1 text-[9px] font-mono text-sky-400 uppercase tracking-tight">{getConversionHint(inputPool, poolUnit)}</p>
+                <p className="mt-1 text-[9px] font-mono text-slate-500 uppercase tracking-tight">{getConversionHint(inputPool, poolUnit)}</p>
               </div>
             </div>
             <button 
@@ -270,11 +270,11 @@ export function FounderStartupActions({ address, valuation: initialValuation }: 
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-[10px] font-bold font-mono text-sky-400 uppercase mb-6 tracking-wide">Stream active. Subsidizing investor exits from the pool.</p>
+            <p className="text-[10px] font-bold font-mono text-slate-500 uppercase mb-6 tracking-wide">Stream active. Subsidizing investor exits from the pool.</p>
             <button 
               onClick={handleCloseExit} 
               disabled={isPending} 
-              className="btn-pro btn-pro-outline w-full h-10 border-red-900/20 text-red-500 hover:bg-red-500/5 hover:border-red-500/50"
+              className="btn-pro btn-pro-outline w-full h-10 border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300"
             >
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Terminate Exit Window'}
             </button>
