@@ -44,7 +44,7 @@ export default function ProposalDetail() {
   const { writeContract: writeVote, isPending: isVoting } = useWriteContract()
   const { writeContract: writeExecute, isPending: isExecuting } = useWriteContract()
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://aravsaxena884-dao.hf.space'
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
   const [isDownloading, setIsDownloading] = useState(false)
   const [backendStartupId, setBackendStartupId] = useState<string | null>(null)
   const source = searchParams.get('source')
@@ -117,6 +117,10 @@ export default function ProposalDetail() {
       fetch(`${BACKEND_URL}/startups`)
         .then(res => res.json())
         .then(async (startups: any[]) => {
+          if (!Array.isArray(startups)) {
+            console.error('Expected startups array, got:', startups)
+            throw new Error('Invalid startups response from backend')
+          }
           const byFounderAndDescription = startups.find(s =>
             s?.description === description &&
             typeof s?.team === 'string' &&

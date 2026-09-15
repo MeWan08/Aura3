@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import ReactPlayer from 'react-player'
 import { useRouter } from 'next/navigation'
 import {
   Brain, Send, Paperclip, Sparkles, Loader2, X, FileText, TrendingUp, Shield, AlertTriangle, Clock, Newspaper, Users, LineChart, Network, Menu, MessageSquare
@@ -40,8 +42,8 @@ ChartJS.register(
   ArcElement
 )
 
-const API_BASE = 'https://aravsaxena884-dao.hf.space'
-const SOCKET_BASE = 'https://aravsaxena884-dao.hf.space'
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+const SOCKET_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
 const JAILBREAK_INPUT_PATTERNS = [
   /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?)/i,
@@ -196,25 +198,35 @@ function AgentBadge({ agent }: { agent?: string }) {
 }
 
 function YouTubeCard({ video }: { video: any }) {
+  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(video.title)}`
+
   return (
-    <div className="group block rounded-lg overflow-hidden border border-slate-200 bg-white shadow-xl">
-      <div className="relative aspect-video overflow-hidden bg-slate-100">
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${video.videoId}?rel=0`}
-          title={video.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="border-0 w-full h-full"
-        />
+    <a 
+      href={searchUrl} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="group block rounded-lg overflow-hidden border border-slate-200 bg-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+    >
+      <div className="relative aspect-video overflow-hidden bg-slate-900 flex items-center justify-center">
+        {/* Placeholder thumbnail gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+        
+        {/* Fake play button overlay */}
+        <div className="relative z-10 w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-red-500 transition-transform duration-300">
+          <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
+        </div>
+
+        {/* Top right "YouTube" badge */}
+        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
+           Watch on YouTube
+        </div>
       </div>
-      <div className="p-3 border-t border-slate-200 bg-slate-50">
+      <div className="p-3 border-t border-slate-200 bg-slate-50 group-hover:bg-blue-50/50 transition-colors">
         <p className="text-[12px] font-bold text-slate-800 group-hover:text-[#0284c7] transition-colors line-clamp-2 leading-snug">
           {video.title}
         </p>
       </div>
-    </div>
+    </a>
   )
 }
 
@@ -1084,7 +1096,7 @@ export default function FinScopePage() {
                       </div>
                       <div className="bg-white p-6 md:p-8 border border-slate-200 shadow-sm rounded-tr-3xl rounded-bl-3xl w-full max-w-4xl">
                         <div className="text-[13px] leading-relaxed text-slate-800 markdown-content font-body flex flex-col gap-4">
-                          {cleanContent && <ReactMarkdown>{cleanContent}</ReactMarkdown>}
+                          {cleanContent && <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanContent}</ReactMarkdown>}
                           {newsData && <ChatNewsCard data={newsData} />}
                           {hasForm && <PortfolioFormCard onSubmit={sendMessage} />}
                           

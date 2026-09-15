@@ -6,6 +6,33 @@ import { VENTUREDAO_ADDRESS, VENTUREDAO_ABI } from '@/constants/abis'
 import { parseEther } from 'viem'
 import { Loader2, UploadCloud, Rocket } from 'lucide-react'
 import { useEthPrice } from '@/hooks/useEthPrice'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { Radar, Bar } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+} from 'chart.js'
+
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement
+)
 
 export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const { address } = useAccount()
@@ -15,6 +42,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const [fundingUnit, setFundingUnit] = useState<'eth' | 'usd'>('eth')
   const [valuationUnit, setValuationUnit] = useState<'eth' | 'usd'>('eth')
   const [description, setDescription] = useState('')
+  const [cin, setCin] = useState('')
   const [file, setFile] = useState<File | null>(null)
   
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -23,7 +51,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
   const { data: hash, writeContract, error: writeError, isPending: isConfirmingInWallet } = useWriteContract()
   const { isLoading: isMining, isSuccess } = useWaitForTransactionReceipt({ hash })
 
-  const BACKEND_URL = 'https://aravsaxena884-dao.hf.space'
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
   const convertToEth = (raw: string, unit: 'eth' | 'usd') => {
     const numeric = Number(raw)
@@ -76,6 +104,7 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: description.slice(0, 50),
+          cin,
           domain: 'Blockchain/Web3',
           description,
           team: address,
@@ -234,8 +263,15 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
               <textarea
                 required rows={3}
                 value={description} onChange={e => setDescription(e.target.value)}
-                className="input-field min-h-[80px] py-3 resize-none"
+                className="input-field min-h-[80px] py-3 resize-none mb-4"
                 placeholder="High-level operational summary..."
+              />
+              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-2 mt-4">CIN (Corporate Identification Number)</label>
+              <input
+                type="text" required
+                value={cin} onChange={e => setCin(e.target.value)}
+                className="input-field h-10 uppercase"
+                placeholder="e.g. U01110TZ2024PTC035123"
               />
             </div>
 
@@ -269,13 +305,127 @@ export function CreateProposalForm({ onSuccess }: { onSuccess: () => void }) {
         ) : (
           <div className="space-y-6">
             <div className="border border-emerald-200 bg-emerald-50 p-6 font-mono">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">AI Audit: SYNTHESIS_COMPLETE</h3>
-                <span className="text-xs text-slate-900 font-bold">{analysisReport.score}/10</span>
+              <div className="flex justify-between items-center mb-6 border-b border-emerald-200 pb-4">
+                <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-widest flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  AI Audit Synthesis
+                </h3>
+                <span className="text-sm text-emerald-900 font-black bg-emerald-200 px-3 py-1 rounded-full">Score: {analysisReport.score}/10</span>
               </div>
-              <p className="text-[10px] text-emerald-800 uppercase leading-relaxed">
-                {analysisReport.executiveSummary}
-              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-2 border-b border-emerald-200/50 pb-1">Executive Summary</h4>
+                  <p className="text-[10px] text-emerald-800 leading-relaxed mb-6">
+                    {analysisReport.executiveSummary}
+                  </p>
+                  
+                  {analysisReport.categoryScores && (
+                    <div className="w-full max-w-[250px] mx-auto opacity-90">
+                      <Radar
+                        data={{
+                          labels: ['Team', 'Market', 'Product', 'Traction', 'Risk'],
+                          datasets: [
+                            {
+                              label: 'AI Evaluation Score',
+                              data: [
+                                analysisReport.categoryScores.team || 0,
+                                analysisReport.categoryScores.market || 0,
+                                analysisReport.categoryScores.product || 0,
+                                analysisReport.categoryScores.traction || 0,
+                                analysisReport.categoryScores.risk || 0,
+                              ],
+                              backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                              borderColor: 'rgba(16, 185, 129, 0.8)',
+                              pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                              pointBorderColor: '#fff',
+                              pointHoverBackgroundColor: '#fff',
+                              pointHoverBorderColor: 'rgba(16, 185, 129, 1)',
+                            },
+                          ],
+                        }}
+                        options={{
+                          scales: {
+                            r: {
+                              min: 0,
+                              max: 10,
+                              ticks: { stepSize: 2, display: false },
+                              grid: { color: 'rgba(16, 185, 129, 0.1)' },
+                              pointLabels: { font: { size: 9, family: 'monospace' }, color: '#047857' }
+                            },
+                          },
+                          plugins: { legend: { display: false } },
+                          maintainAspectRatio: true,
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {analysisReport.projectedRevenue && analysisReport.projectedRevenue.length > 0 && (
+                    <div className="w-full mt-6">
+                      <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-2 border-b border-emerald-200/50 pb-1">Projected Revenue (in Millions)</h4>
+                      <div className="w-full h-[180px]">
+                        <Bar
+                          data={{
+                            labels: analysisReport.projectedRevenue.map((r: any) => r.year),
+                            datasets: [
+                              {
+                                label: 'Revenue ($M)',
+                                data: analysisReport.projectedRevenue.map((r: any) => r.revenue),
+                                backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                                borderRadius: 4,
+                              }
+                            ]
+                          }}
+                          options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                              y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(16, 185, 129, 0.1)' },
+                                ticks: { font: { size: 9, family: 'monospace' }, color: '#047857' }
+                              },
+                              x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 9, family: 'monospace' }, color: '#047857' }
+                              }
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div>
+                    <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 border-b border-emerald-200/50 pb-1">Market Analysis</h4>
+                    <div className="text-[10px] text-emerald-800 leading-relaxed prose prose-sm prose-emerald max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analysisReport.marketAnalysis}</ReactMarkdown>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 border-b border-emerald-200/50 pb-1">Team Assessment</h4>
+                    <div className="text-[10px] text-emerald-800 leading-relaxed prose prose-sm prose-emerald max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analysisReport.teamAssessment}</ReactMarkdown>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 border-b border-emerald-200/50 pb-1">Key Risks</h4>
+                    <div className="text-[10px] text-emerald-800 leading-relaxed prose prose-sm prose-emerald max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analysisReport.riskFactors}</ReactMarkdown>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 border-b border-emerald-200/50 pb-1">Recommendation</h4>
+                    <div className="text-[10px] font-semibold text-emerald-900 leading-relaxed prose prose-sm prose-emerald max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{analysisReport.recommendation}</ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { TrendingUp, Zap, ExternalLink } from 'lucide-react'
 
-const API_BASE = 'https://aravsaxena884-dao.hf.space'
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
 const FALLBACK_HEADLINES: NewsItem[] = [
   {

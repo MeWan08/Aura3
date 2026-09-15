@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Newspaper, ExternalLink, TrendingUp, Clock } from 'lucide-react'
 import { CardBody, CardContainer, CardItem } from './3d-card'
 
-const API_BASE = 'https://aravsaxena884-dao.hf.space'
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 
 const CRYPTO_IMAGES = [
   "https://images.unsplash.com/photo-1518544887871-8bcb1c9f1b67?auto=format&fit=crop&w=800&q=80",
